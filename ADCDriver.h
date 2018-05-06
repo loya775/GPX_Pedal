@@ -128,6 +128,6 @@ uint32 getTemperatureCelsius(uint16 AVGADC_value);
  	 \return This function returns the temperature read in Fahrenheit
  */
 
-uflo32 getTemperatureFahrenheit(uint16 AVGADC_value);
+flo32 getTemperatureFahrenheit(uint16 AVGADC_value);
 
 #endif /* ADCDRIVER_H_ */

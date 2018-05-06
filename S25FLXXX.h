@@ -116,6 +116,14 @@ typedef union {
 	}addressByByte;
 }S25FLXXX_MemoryAddressType;
 
+typedef union {
+	uint32 address;
+	struct
+	{
+		uint8 addressByte0   :8;
+		uint8 addressByte1   :8;
+	}addressByByte;
+}GUITAR_DATA;
 
 typedef union
 {
@@ -143,29 +151,24 @@ typedef union
 
 /** These functions are used to store events in memory*/
 void S25FLXXX_writeEvent(S25FLXXX_EventType* event, S25FLXXX_MemoryAddressType* address,MemoryPortType* SPIChannel);
-void S25FLXXX_readEvent(S25FLXXX_EventType* event, S25FLXXX_MemoryAddressType* address,MemoryPortType* SPIChannel);
 
 
-/** This two functions are used to write the schedules in memory. They used a special data type to convert a uint32 to byte*/
-S25FLXXX_ScheduleAddressType S25FLXXX_readSchedule(S25FLXXX_MemoryAddressType* address, MemoryPortType* SPIChannel);
 void S25FLXXX_writeSchedule(S25FLXXX_ScheduleAddressType* pointer,S25FLXXX_MemoryAddressType* address, MemoryPortType* SPIChannel);
 
 
 
-S25FLXXX_AddressPointerType S25FLXXX_readPointer(S25FLXXX_MemoryAddressType* address, MemoryPortType* SPIChannel);
 
 void S25FLXXX_writePointer(S25FLXXX_AddressPointerType* pointer,S25FLXXX_MemoryAddressType* address, MemoryPortType* SPIChannel);
 
 
 void S25FLXXX_readID(uint8*);
 void S25FLXXX_writeBytes(uint8 *,S25FLXXX_MemoryAddressType* address, MemoryPortType*, uint32 numberOfBytes);
-void S25FLXXX_writeByte(S25FLXXX_MemoryAddressType* address, MemoryPortType*);
+void S25FLXXX_writeByte(uint8 byteToWrite,S25FLXXX_MemoryAddressType* address, MemoryPortType* SPIChannel);
 
 
 
 void S25FLXXX_writeUID(UID_MemoryType* uid ,S25FLXXX_MemoryAddressType* address, MemoryPortType* SPIChannel);
 
-UID_MemoryType S25FLXXX_readUID(S25FLXXX_MemoryAddressType*, MemoryPortType*);
 
 
 void S25FLXXX_readBytes(uint8 *,S25FLXXX_MemoryAddressType*, MemoryPortType*, uint32);

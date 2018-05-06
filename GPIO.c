@@ -20,7 +20,6 @@
 
 GPIO_interruptFlags_t GPIO_intrStatusFlag;
 uint8 Identifier = FALSE;
-
 void PORTA_IRQHandler(void)
 {
 	GPIO_intrStatusFlag.flagPortA = TRUE;

@@ -26,9 +26,9 @@
 #define LOWPOWERSHIFT 6
 #define SAMPSHIFT 4
 
-static float64 ReturnTemp;
+static flo32 ReturnTemp;
 static uint32 TemperatureC;
-static float64 TemperatureF;
+static flo32 TemperatureF;
 
 ADC_ConfigType* ADC_Config;
 
@@ -114,7 +114,7 @@ uint32 getTemperatureCelsius(uint16 AVGADC_value){
 	return ReturnTemp;
 }
 
-uflo32 getTemperatureFahrenheit(uint16 AVGADC_value){
+flo32 getTemperatureFahrenheit(uint16 AVGADC_value){
 	/*This function converts bits into Temperature in Celsius using a slope of 10mV/C and multiplying it by 1.8 and adding 32.2*/
 	TemperatureF=((MAXVOLTAGE*AVGADC_value) / (MAXBITS*TEMPSLOPE)) * FAHRENHEITFACTOR + FAHRENHEITCONST;
 		if(TRUE == getFlexFlag()){

@@ -29,17 +29,21 @@
  */
  
 /**
- * @file    GPX_PEDAL.c
+ * @file    ADC_FOR_GUITAR.c
  * @brief   Application entry point.
  */
 #include <stdio.h>
 #include "MK64F12.h"
-#include "SPI.h"
-#include  "GPIO.h"
 #include "ADCDriver.h"
+#include "DataTypeDefinitions.h"
+#include "FlexTimer.h"
+#include "NVIC.h"
+#include "DAC.h"
 #include "S25FLXXX.h"
-
-
+#include "SPI.h"
+#include "LCD_Writing.h"
+#define SC1FLAG 0x1F
+#define SC3FlAG 0x07
 #define SPI_CHANNEL		SPI_0
 #define SPI_PORT		GPIO_D
 #define SPI_MOSI_BIT	BIT2
@@ -56,11 +60,6 @@
 #define BEGINNING_OF_FIRST_SECTOR 0x000000
 /**End of the first sector of the memory*/
 #define END_OF_FIRST_SECTOR   0x000FFF
-
-/** Baud rate is calculated as BaudRate= SystemClock/(doubleDataRate*baudRate)
-	 * 	In the case of 60 MHz of system clock the SPI baud rate is 15 MHz. It is
-	 * 	important to note the the double baud rate needs to be enabled, otherwise is not
-	 * 	possible to reach this frequency*/
 		const SPI_ConfigType SPI_ConfigMemory={
 				SPI_DISABLE_FIFO,
 				SPI_LOW_POLARITY,
@@ -72,8 +71,9 @@
 				SPI_DOUBLE_BAUD_RATE,// It doubles the baud rate
 				SPI_FSIZE_8,
 				SPI_CS_HIGH,
-				{SPI_PORT,SPI_MOSI_BIT,SPI_MISO_BIT,SPI_CLK,SPI_CS_BIT,
-						SPI_PIN_CONFIG,SPI_CS_CONFIG}};
+				{SPI_PORT,SPI_MOSI_BIT,SPI_MISO_BIT,
+				SPI_CLK,SPI_CS_BIT,
+				SPI_PIN_CONFIG,SPI_CS_CONFIG}};
 
 
 		/**This is the bit that is used for the chip select in the SPI*/
@@ -95,12 +95,12 @@ uint8 MMU_waitingFunction()
 			};
 
 	uint8 status;
-	uint8 status2;
+
 
 	do {
 		status = S25FLXXX_readStatusRegister(STATUS_REGISTER_1,&SPIChannelForMemory);
 		status = status & 0x01;
-		status = status;
+
 	}
 	while(status);
 
@@ -108,70 +108,114 @@ uint8 MMU_waitingFunction()
 
 }
 
+	const FTM_ConfigType FTM_Config={
+			FTM_0,
+			FTM_OutputC_Toogle
+	};
+
+	const ADC_ConfigType ADC  = {
+			0,
+			ADC0Type,
+			NORMAL_POWER,
+			RATIO1,
+			SHORT_SAMPLE,
+			CONV12,
+			BUSCLK
+	};
 
 int main(void) {
-
-	uint8 data;
-	uint16 EraseCounter=0;
-	uint16 PageMain;
-	uint16 AddressMain;
-	uint16 PageCounter = 0;
-	uint16 AddressCounter = 0;
+	uint16 Sample;
+	uint16 DacValue;
+	uint16 Counter=0;
+	uint16 Counter2=0;
+	//uint8 Prove;
+	//uint8 Prove2;
+	uint8 Value=0;
+	uint8 Value2=0;
+	uint8 SC1cfg = SC1FLAG;
+	uint8 SC2cfg = 0;
+	uint32 Top=0x1FFFFF;
+	uint8 SC3cfg = SC3FlAG;
+	GUITAR_DATA Data_Bits = {0};
+	GPIO_pinControlRegisterType pinControlRegisterGPIOCPortC = GPIO_MUX1|INTR_FALLING_EDGE;
+	GPIO_clockGating(GPIO_C);
+	GPIO_pinControlRegister(GPIO_C,BIT5,&pinControlRegisterGPIOCPortC);
+	GPIO_dataDirectionPIN(GPIO_C, GPIO_INPUT, BIT5);
+	NVIC_enableInterruptAndPriotity(PORTC_IRQ, PRIORITY_5);
+	ADC_initialize(&ADC,SC1cfg,SC2cfg,SC3cfg);
+	FlexTimer_Init(&FTM_Config);
+    //SIM->SCGC5 |= GPIO_CLOCK_GATING_PORTA|GPIO_CLOCK_GATING_PORTC;
+	//PORTC->PCR[1]   = PORT_PCR_MUX(0x4);
+	NVIC_enableInterruptAndPriotity(FTM0_IRQ, PRIORITY_1);
+	DAC0_clockGating();
+	DAC0_init();
+	EnableInterrupts;
 	S25FLXXX_MemoryAddressType S25FLXXX_MemoryAddress = {0};
-
-	S25FLXXX_MemoryAddress.address = BEGINNING_OF_FIRST_SECTOR + 4;
-
+	S25FLXXX_MemoryAddress.address = 0;
 	SPI_init(&SPI_ConfigMemory);
-
-	//S25FLXXX_erase4KbSector(&S25FLXXX_MemoryAddress, &SPIChannelForMemory);
-	//MMU_waitingFunction();
-
-	//data = S25FLXXX_readByte(&S25FLXXX_MemoryAddress, &SPIChannelForMemory);
-	//MMU_waitingFunction();
-
-	//S25FLXXX_writeByte(&S25FLXXX_MemoryAddress,&SPIChannelForMemory);
-	S25FLXXX_write(55, &S25FLXXX_MemoryAddress,&SPIChannelForMemory);
-
+	Value = S25FLXXX_readByte(&S25FLXXX_MemoryAddress,&SPIChannelForMemory);
 	MMU_waitingFunction();
-//
-	data = S25FLXXX_readByte(&S25FLXXX_MemoryAddress, &SPIChannelForMemory);
+	//S25FLXXX_EraseMemory(&SPIChannelForMemory);
 	MMU_waitingFunction();
-	//Erase Memory
-
-	//S25FLXXX_MemoryAddress.address = 4;
-		//data = S25FLXXX_readByte(&S25FLXXX_MemoryAddress, &SPIChannelForMemory);
-		//MMU_waitingFunction();
-		S25FLXXX_EraseMemory(&SPIChannelForMemory);
-	//S25FLXXX_MemoryAddress.address = 0x4;
-	MMU_waitingFunction();
-	data = S25FLXXX_readByte(&S25FLXXX_MemoryAddress, &SPIChannelForMemory);
+	Value = S25FLXXX_readByte(&S25FLXXX_MemoryAddress,&SPIChannelForMemory);
+	Inicio_LCD();
     while(TRUE)
     {
+
     	if(GPIO_getIRQStatus(GPIO_C))
     	{
-    		S25FLXXX_writeByte(&S25FLXXX_MemoryAddress,&SPIChannelForMemory);
-    		MMU_waitingFunction();
     		GPIO_clearIRQStatus(GPIO_C);
-    		PageMain = GetPage();
-    		AddressMain = GetAddress();
-    	}
-    	S25FLXXX_MemoryAddress.address = 1;
+    		Counter=0;
+    			while(!GPIO_getIRQStatus(GPIO_C) && Counter <= Top)
+    			{
+    				if(getFlexFlag())
+    				{
 
+    					Sample = StartConversion(&ADC);
+    					GPIO_clearIRQStatus(GPIO_C);
+    					Data_Bits.address = Sample;
+    					Value = Data_Bits.addressByByte.addressByte0;
+    					Value2 = Data_Bits.addressByByte.addressByte1;
 
+    					S25FLXXX_writeByte(Value,&S25FLXXX_MemoryAddress,&SPIChannelForMemory);
+    					MMU_waitingFunction();
+    					//Prove = S25FLXXX_readByte(&S25FLXXX_MemoryAddress,&SPIChannelForMemory);
+    					MMU_waitingFunction();
+    					S25FLXXX_MemoryAddress.address += 1;
+    					S25FLXXX_writeByte(Value2,&S25FLXXX_MemoryAddress,&SPIChannelForMemory);
+    					MMU_waitingFunction();
+    					//Prove2 = S25FLXXX_readByte(&S25FLXXX_MemoryAddress,&SPIChannelForMemory);
+    					GPIO_clearIRQStatus(GPIO_C);
+    					MMU_waitingFunction();
+    					DAC0_write(Sample);
+    					S25FLXXX_MemoryAddress.address += 1;
+    					Counter=S25FLXXX_MemoryAddress.address;
+    					clearFlexFlag();
+    				}
 
-    	/*
-    	while(PageCounter < PageMain )
-    	{
-    		while(AddressCounter <= 0xFFF)
-    		{
-    	    	data = S25FLXXX_readByte(&S25FLXXX_MemoryAddress, &SPIChannelForMemory);
-    	    	S25FLXXX_MemoryAddress.address += 1;
+    			}
     		}
-    		PageCounter += 1;
-    	}*/
 
-    	//data = S25FLXXX_readByte(&S25FLXXX_MemoryAddress, &SPIChannelForMemory);
+
+
+
+
+    	S25FLXXX_MemoryAddress.address = 0;
+    	Value = S25FLXXX_readByte(&S25FLXXX_MemoryAddress,&SPIChannelForMemory);
+    	S25FLXXX_MemoryAddress.address += 1;
+    	Value2 = S25FLXXX_readByte(&S25FLXXX_MemoryAddress,&SPIChannelForMemory);
+    	S25FLXXX_MemoryAddress.address += 1;
+    	Data_Bits.addressByByte.addressByte0=Value;
+    	Data_Bits.addressByByte.addressByte1=Value2;
+    	DacValue = Data_Bits.address;
+    	DAC0_write(DacValue);
+    	Counter2 += S25FLXXX_MemoryAddress.address;
+
+    	if (Counter2 == Counter)
+    	{
+    		Counter2=0;
+
+    	}
     }
     return 0 ;
 }
-

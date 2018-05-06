@@ -428,3 +428,40 @@ void SPI_setSlave(SPI_ChannelType channel, uint32 frameSize, SPI_PolarityType cp
 	}
 }
 
+void SPI_startTranference2(SPI_ChannelType channel)
+{
+	switch (channel)
+	{
+		case SPI_0:
+			SPI0->MCR &= ~SPI_MCR_HALT_MASK;
+			break;
+		case SPI_1:
+			SPI1->MCR &= ~SPI_MCR_HALT_MASK;
+			break;
+		default:
+			SPI2->MCR &= ~SPI_MCR_HALT_MASK;
+			break;
+	}
+}
+
+void SPI_stopTranference2(SPI_ChannelType channel)
+{
+	switch (channel)
+	{
+		case SPI_0:
+			SPI0->MCR |= SPI_MCR_HALT_MASK;
+			break;
+		case SPI_1:
+			SPI1->MCR |= SPI_MCR_HALT_MASK;
+			break;
+		default:
+			SPI2->MCR |= SPI_MCR_HALT_MASK;
+			break;
+	}
+}
+void SPI_sendOneByte(uint8 Data)
+{
+	SPI0->PUSHR = (Data);
+	while(FALSE == (SPI0->SR & SPI_SR_TCF_MASK));
+	SPI0->SR |= SPI_SR_TCF_MASK;
+}

@@ -139,6 +139,8 @@ void SPI_CSInactiveState(SPI_ChannelType channel,SPI_CSInactiveStateType csInact
  * \param cpha Fase
  */
 void SPI_setSlave(SPI_ChannelType channel, uint32 frameSize, SPI_PolarityType cpol, SPI_PhaseType cpha);
-
+void SPI_sendOneByte(uint8 Data);
+void SPI_stopTranference2(SPI_ChannelType channel);
+void SPI_startTranference2(SPI_ChannelType channel);
 
 #endif /* SPI_H_ */

@@ -11,5 +11,5 @@
 #include "DataTypeDefinitions.h"
 
 void delay(uint16);
-void SpecialDelay();
+
 #endif /* GLOBALFUNCTIONS_H_ */

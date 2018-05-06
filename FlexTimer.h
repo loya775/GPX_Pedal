@@ -121,11 +121,11 @@ void FTM_MODE_Config(FTM_Number FTM, FTM_MODE MODE);
  	 \param[in] It doesn´t need parameter
  	 \return The value of Frequency
  */
-float64 FlexTimerConvertVALUE(void);
+flo32 FlexTimerConvertVALUE(void);
 /*!
  	 \brief	 This function gives you value of count from FTM2 interruptions
  	 \param[in] It doesn´t need parameter
  	 \return The value count of FTM2 interruptions
  */
-float64 FlexTimer_GetCounter(void);
+flo32 FlexTimer_GetCounter(void);
 #endif /* FLEXTIMER_H_ */

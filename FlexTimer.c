@@ -21,18 +21,18 @@
 #define DutyCycle50 2
 #define Clock 21000000
 #define ConvertPeriodo 0.000006103f
-float64 i;
+flo32 i;
 uint8 FlexFlag;
-float64 Frecuencia;
+flo32 Frecuencia;
 uint32 PreviousValue;
 uint32 Total;
 uint32 Value;
 uint32 dummie;
 uint8 Flag;
 /*This function activates when the FTM1_IRQHandler is activated we turn on a flag who say us when we got a take a value from our temperature sensor*/
-void FTM1_IRQHandler()
+void FTM0_IRQHandler()
 {
-	FTM1->SC &= ~FLEX_TIMER_TOF;
+	FTM0->SC &= ~FLEX_TIMER_TOF;
 	FlexFlag = TRUE;
 }
 
@@ -123,7 +123,7 @@ void FTM_MODE_Config(FTM_Number FTM, FTM_MODE MODE)
 			break;
 				case(FTM_OutputC_Toogle):
 					FTM1->MODE |= FLEX_TIMER_WPDIS;
-					FTM1->MODE |= FLEX_TIMER_FTMEN;
+					FTM1->MODE &= ~FLEX_TIMER_FTMEN;
 					FTM1->CONF |= FTM_CONF_BDMMODE(BDMMODE_3);
 					FTM1->MOD = ValuMODOutput;
 					FTM1->CONTROLS[FirstValueinArray].CnSC = FLEX_TIMER_MSA | FLEX_TIMER_ELSA;
@@ -182,7 +182,7 @@ void FTM_MODE_Config(FTM_Number FTM, FTM_MODE MODE)
 	}
 }
 /*We do the convertion to frequency from the value obtained from FTM2 interruption*/
-float64 FlexTimerConvertVALUE()
+flo32 FlexTimerConvertVALUE()
 {
 	i=FlexTimer_GetCounter();
 	Frecuencia=(Clock/128)*i;
@@ -191,7 +191,8 @@ float64 FlexTimerConvertVALUE()
 	return Frecuencia;
 }
 /*Assign the value of number of count from FTM2 interruptions*/
-float64 FlexTimer_GetCounter(void)
+
+flo32 FlexTimer_GetCounter(void)
 {
 	return Total;
 }
