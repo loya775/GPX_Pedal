@@ -138,9 +138,13 @@ int main(void) {
 	uint8 SC3cfg = SC3FlAG;
 	GUITAR_DATA Data_Bits = {0};
 	GPIO_pinControlRegisterType pinControlRegisterGPIOCPortC = GPIO_MUX1|INTR_FALLING_EDGE;
+	GPIO_pinControlRegisterType pinControlRegisterGPIOBPortB = GPIO_MUX1;
 	GPIO_clockGating(GPIO_C);
 	GPIO_pinControlRegister(GPIO_C,BIT5,&pinControlRegisterGPIOCPortC);
 	GPIO_dataDirectionPIN(GPIO_C, GPIO_INPUT, BIT5);
+	GPIO_clockGating(GPIO_B);
+	GPIO_pinControlRegister(GPIO_B,BIT18,&pinControlRegisterGPIOBPortB);
+	GPIO_dataDirectionPIN(GPIO_B, GPIO_INPUT, BIT18);
 	NVIC_enableInterruptAndPriotity(PORTC_IRQ, PRIORITY_5);
 	ADC_initialize(&ADC,SC1cfg,SC2cfg,SC3cfg);
 	FlexTimer_Init(&FTM_Config);
@@ -153,11 +157,15 @@ int main(void) {
 	S25FLXXX_MemoryAddressType S25FLXXX_MemoryAddress = {0};
 	S25FLXXX_MemoryAddress.address = 0;
 	SPI_init(&SPI_ConfigMemory);
-	Value = S25FLXXX_readByte(&S25FLXXX_MemoryAddress,&SPIChannelForMemory);
-	MMU_waitingFunction();
-	//S25FLXXX_EraseMemory(&SPIChannelForMemory);
+	S25FLXXX_writeByte(0x40,&S25FLXXX_MemoryAddress,&SPIChannelForMemory);
 	MMU_waitingFunction();
 	Value = S25FLXXX_readByte(&S25FLXXX_MemoryAddress,&SPIChannelForMemory);
+	MMU_waitingFunction();
+
+	S25FLXXX_EraseMemory(&SPIChannelForMemory);
+	MMU_waitingFunction();
+	LCDNokia_init();
+	LCDNokia_clear();
 	Inicio_LCD();
     while(TRUE)
     {
@@ -214,6 +222,10 @@ int main(void) {
     	if (Counter2 == Counter)
     	{
     		Counter2=0;
+
+    	}
+    	if(GPIO_readPIN(GPIO_B, BIT18))
+    	{
 
     	}
     }

@@ -53,7 +53,7 @@ void Inicio_LCD()
 {
 	uint8 string1[]="1)Resonator "; /*! String to be printed in the LCD*/
 	uint8 string2[]="2)Chorus"; /*! String to be printed in the LCD*/
-	uint8 string3[]="3)Flangere"; /*! String to be printed in the LCD*/
+	uint8 string3[]="3)Flanger"; /*! String to be printed in the LCD*/
 	uint8 string4[]="4)Wah-wah"; /*! String to be printed in the LCD*/
 	uint8 string5[]="5)Tremolo"; /*! String to be printed in the LCD*/
 	uint8 string6[]="6)Distorsion"; /*! String to be printed in the LCD*/

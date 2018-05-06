@@ -115,23 +115,23 @@ static const uint8 ASCII[][5] =
 void LCDNokia_init(void) {
 	GPIO_pinControlRegisterType pinControlRegister = GPIO_MUX1;
 
-	GPIO_clockGating(GPIO_D);
-	GPIO_dataDirectionPIN(GPIO_D,GPIO_OUTPUT,DATA_OR_CMD_PIN);
-	GPIO_pinControlRegister(GPIO_D,BIT3,&pinControlRegister);
+	GPIO_clockGating(GPIO_C);
+	GPIO_dataDirectionPIN(GPIO_C,GPIO_OUTPUT,DATA_OR_CMD_PIN);
+	GPIO_pinControlRegister(GPIO_C,BIT2,&pinControlRegister);
 	
-	GPIO_clockGating(GPIO_D);
-	GPIO_dataDirectionPIN(GPIO_D,GPIO_OUTPUT,RESET_PIN);
-	GPIO_pinControlRegister(GPIO_D,RESET_PIN,&pinControlRegister);
+	GPIO_clockGating(GPIO_C);
+	GPIO_dataDirectionPIN(GPIO_C,GPIO_OUTPUT,RESET_PIN);
+	GPIO_pinControlRegister(GPIO_C,RESET_PIN,&pinControlRegister);
   //Configure control pins
 	
 
-	GPIO_clearPIN(GPIO_D, RESET_PIN);
+	GPIO_clearPIN(GPIO_C, RESET_PIN);
 	LCD_delay();
-	GPIO_setPIN(GPIO_D, RESET_PIN);
+	GPIO_setPIN(GPIO_C, RESET_PIN);
 	LCDNokia_writeByte(LCD_CMD, 0x21); //Tell LCD that extended commands follow
 	LCDNokia_writeByte(LCD_CMD, 0xBF); //Set LCD Vop (Contrast): Try 0xB1(good @ 3.3V) or 0xBF if your display is too dark
 	LCDNokia_writeByte(LCD_CMD, 0x04); //Set Temp coefficent
-	LCDNokia_writeByte(LCD_CMD, 0x13); //LCD bias mode 1:48: Try 0x13 or 0x14
+	LCDNokia_writeByte(LCD_CMD, 0x14); //LCD bias mode 1:48: Try 0x13 or 0x14
 
 	LCDNokia_writeByte(LCD_CMD, 0x20); //We must send 0x20 before modifying the display control mode
 	LCDNokia_writeByte(LCD_CMD, 0x0C); //Set display control, normal mode. 0x0D for inverse
@@ -148,9 +148,9 @@ void LCDNokia_bitmap(const uint8* my_array){
 void LCDNokia_writeByte(uint8 DataOrCmd, uint8 data)
 {
 	if(DataOrCmd)
-		GPIO_setPIN(GPIO_D, DATA_OR_CMD_PIN);
+		GPIO_setPIN(GPIO_C, DATA_OR_CMD_PIN);
 	else
-		GPIO_clearPIN(GPIO_D, DATA_OR_CMD_PIN);
+		GPIO_clearPIN(GPIO_C, DATA_OR_CMD_PIN);
 	
 	SPI_startTranference(SPI_0);
 	SPI_sendOneByte(data);
@@ -176,7 +176,6 @@ void LCDNokia_sendString(uint8 *characters) {
 
 void LCDNokia_clear(void) {
 	uint16 index = 0;
-	delay(20000);
   for (index = 0 ; index < (LCD_X * LCD_Y / 8) ; index++)
 	  LCDNokia_writeByte(LCD_DATA, 0x00);
   LCDNokia_gotoXY(0, 0); //After we clear the display, return to the home position
