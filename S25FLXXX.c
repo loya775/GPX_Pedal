@@ -11,8 +11,13 @@
 #include "FlexTimer.h"
 #include "ADCDriver.h"
 #include "GPIO.h"
+#include "DAC.h"
 uint16 PageValue;
 uint16 AddressValue;
+uint16 DacValue;
+uint16 DacValue2;
+uint16 Dac;
+GUITAR_DATA Data_Bit = {0};
 //#include "GlobalFunctions.h"
 const ADC_ConfigType ADC_Memory  = {
 		0,
@@ -319,5 +324,22 @@ void S25FLXXX_readBytes(uint8* bytesToRead,S25FLXXX_MemoryAddressType* address, 
  	SPI_transfer(SPIChannel->SPI_channel, address->addressByByte.addressByte0);
  	SPI_transfer(SPIChannel->SPI_channel, byteToWrite);
  	GPIO_setPIN(SPIChannel->PortName, SPIChannel->chipEnableBit);
+ }
+
+ uint32 Looper_Memory(S25FLXXX_MemoryAddressType address, uint32 Counter, MemoryPortType SPIChannel)
+ {
+	DacValue = S25FLXXX_readByte(&address, &SPIChannel);
+	MMU_waitingFunction();
+ 	address.address += 1;
+ 	DacValue2 = S25FLXXX_readByte(&address,&SPIChannel);
+ 	MMU_waitingFunction();
+ 	address.address += 1;
+ 	Data_Bit.addressByByte.addressByte0=DacValue;
+ 	Data_Bit.addressByByte.addressByte1=DacValue2;
+ 	DAC0_write(Data_Bit.address);
+ 	/*If Counter2 is in his Max Value we restarted */
+ 	if (address.address >= Counter)
+ 		address.address=0;
+ 	return address.address;
  }
 

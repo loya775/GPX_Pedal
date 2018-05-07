@@ -73,6 +73,229 @@ void Inicio_LCD()
 	delay(DelayValue);
 }
 
+void LOOPER_ON_LCD()
+{
+	uint8 string1[]="LOOPER ACTIVADO"; /*! String to be printed in the LCD*/
+	LCDNokia_clear();
+	LCDNokia_gotoXY(3,Begin_LCD); /*! It establishes the position to print the messages in the LCD*/
+	LCDNokia_sendString(string1); /*! It print a string stored in an array*/
+	delay(DelayValue);
+}
 
+void LOOPER_OFF_LCD()
+{
+	uint8 string1[]="LOOPER DESACTIVADO"; /*! String to be printed in the LCD*/
+	LCDNokia_clear();
+	LCDNokia_gotoXY(3,Begin_LCD); /*! It establishes the position to print the messages in the LCD*/
+	LCDNokia_sendString(string1); /*! It print a string stored in an array*/
+	delay(DelayValue);
+}
 
+void Saving_Memory_LCD()
+{
+	uint8 string1[]="Saving value"; /*! String to be printed in the LCD*/
+	uint8 string2[]=" For Looper"; /*! String to be printed in the LCD*/
+	LCDNokia_clear();
+	LCDNokia_gotoXY(Begin_LCD,0); /*! It establishes the position to print the messages in the LCD*/
+	LCDNokia_sendString(string1); /*! It print a string stored in an array*/
+	LCDNokia_gotoXY(2,1); /*! It establishes the position to print the messages in the LCD*/
+	LCDNokia_sendString(string2); /*! It print a string stored in an array*/
+	delay(DelayValue);
+}
 
+void Saving_Finish_LCD()
+{
+	uint8 string1[]="Values save"; /*! String to be printed in the LCD*/
+	uint8 string2[]="  in the "; /*! String to be printed in the LCD*/
+	uint8 string3[]="  Memory "; /*! String to be printed in the LCD*/
+	LCDNokia_clear();
+	LCDNokia_gotoXY(Begin_LCD,1); /*! It establishes the position to print the messages in the LCD*/
+	LCDNokia_sendString(string1); /*! It print a string stored in an array*/
+	LCDNokia_gotoXY(Begin_LCD,2); /*! It establishes the position to print the messages in the LCD*/
+	LCDNokia_sendString(string2); /*! It print a string stored in an array*/
+	LCDNokia_gotoXY(Begin_LCD,3); /*! It establishes the position to print the messages in the LCD*/
+	LCDNokia_sendString(string3); /*! It print a string stored in an array*/
+	delay(DelayValue);
+}
+
+void Chorus_LCD(uint8 Value)
+{
+	IntToString = Value/100;
+	IntToString2 = ((Value-(IntToString*100))/10);
+	IntToString3 = (Value-(IntToString*100)-(IntToString2*10));
+	uint8 string1[]="  Chorus"; /*! String to be printed in the LCD*/
+	uint8 string2[]="  Effect"; /*! String to be printed in the LCD*/
+	uint8 string3[]="B0)+ B1)-"; /*! String to be printed in the LCD*/
+	uint8 string4[]="%"; /*! String to be printed in the LCD*/
+	LCDNokia_clear();
+	LCDNokia_gotoXY(Begin_LCD,Begin_LCD); /*! It establishes the position to print the messages in the LCD*/
+	LCDNokia_sendString(string1); /*! It print a string stored in an array*/
+	LCDNokia_gotoXY(Begin_LCD,1); /*! It establishes the position to print the messages in the LCD*/
+	LCDNokia_sendString(string2); /*! It print a string stored in an array*/
+	LCDNokia_gotoXY(Begin_LCD,2); /*! It establishes the position to print the messages in the LCD*/
+	LCDNokia_sendString(string3); /*! It print a string stored in an array*/
+	LCDNokia_gotoXY(Begin_LCD,3); /*! It establishes the position to print the messages in the LCD*/
+	LCDNokia_sendChar(IntToString+48); /*! It print a string stored in an array*/
+	LCDNokia_sendChar(IntToString2+48); /*! It print a string stored in an array*/
+	LCDNokia_sendChar(IntToString3+48); /*! It print a string stored in an array*/
+	LCDNokia_sendString(string4); /*! It print a string stored in an array*/
+	delay(DelayValue);
+}
+
+void Resonator_LCD(uint8 Value)
+{
+	IntToString = Value/100;
+	IntToString2 = ((Value-(IntToString*100))/10);
+	IntToString3 = (Value-(IntToString*100)-(IntToString2*10));
+	uint8 string1[]="Resonator "; /*! String to be printed in the LCD*/
+	uint8 string2[]=" Effect "; /*! String to be printed in the LCD*/
+	uint8 string3[]="B0)+ B1)-"; /*! String to be printed in the LCD*/
+	uint8 string4[]="%"; /*! String to be printed in the LCD*/
+	LCDNokia_clear();
+	LCDNokia_gotoXY(Begin_LCD,Begin_LCD); /*! It establishes the position to print the messages in the LCD*/
+	LCDNokia_sendString(string1); /*! It print a string stored in an array*/
+	LCDNokia_gotoXY(Begin_LCD,1); /*! It establishes the position to print the messages in the LCD*/
+	LCDNokia_sendString(string2); /*! It print a string stored in an array*/
+	LCDNokia_gotoXY(Begin_LCD,2); /*! It establishes the position to print the messages in the LCD*/
+	LCDNokia_sendString(string3); /*! It print a string stored in an array*/
+	LCDNokia_gotoXY(Begin_LCD,3); /*! It establishes the position to print the messages in the LCD*/
+	LCDNokia_sendChar(IntToString+48); /*! It print a string stored in an array*/
+	LCDNokia_sendChar(IntToString2+48); /*! It print a string stored in an array*/
+	LCDNokia_sendChar(IntToString3+48); /*! It print a string stored in an array*/
+	LCDNokia_sendString(string4); /*! It print a string stored in an array*/
+	delay(DelayValue);
+}
+
+void Flanger_LCD(uint8 Value)
+{
+	IntToString = Value/100;
+	IntToString2 = ((Value-(IntToString*100))/10);
+	IntToString3 = (Value-(IntToString*100)-(IntToString2*10));
+	uint8 string1[]="  Flanger"; /*! String to be printed in the LCD*/
+	uint8 string2[]=" Effect "; /*! String to be printed in the LCD*/
+	uint8 string3[]="B0)+ B1)-"; /*! String to be printed in the LCD*/
+	uint8 string4[]="%"; /*! String to be printed in the LCD*/
+	LCDNokia_clear();
+	LCDNokia_gotoXY(Begin_LCD,Begin_LCD); /*! It establishes the position to print the messages in the LCD*/
+	LCDNokia_sendString(string1); /*! It print a string stored in an array*/
+	LCDNokia_gotoXY(Begin_LCD,1); /*! It establishes the position to print the messages in the LCD*/
+	LCDNokia_sendString(string2); /*! It print a string stored in an array*/
+	LCDNokia_gotoXY(Begin_LCD,2); /*! It establishes the position to print the messages in the LCD*/
+	LCDNokia_sendString(string3); /*! It print a string stored in an array*/
+	LCDNokia_gotoXY(Begin_LCD,3); /*! It establishes the position to print the messages in the LCD*/
+	LCDNokia_sendChar(IntToString+48); /*! It print a string stored in an array*/
+	LCDNokia_sendChar(IntToString2+48); /*! It print a string stored in an array*/
+	LCDNokia_sendChar(IntToString3+48); /*! It print a string stored in an array*/
+	LCDNokia_sendString(string4); /*! It print a string stored in an array*/
+	delay(DelayValue);
+}
+
+void Wah_wah_LCD(uint8 Value)
+{
+	IntToString = Value/100;
+	IntToString2 = ((Value-(IntToString*100))/10);
+	IntToString3 = (Value-(IntToString*100)-(IntToString2*10));
+	uint8 string1[]="  Wah-wah "; /*! String to be printed in the LCD*/
+	uint8 string2[]="   Effect"; /*! String to be printed in the LCD*/
+	uint8 string3[]="B0)+ B1)-"; /*! String to be printed in the LCD*/
+	uint8 string4[]="%"; /*! String to be printed in the LCD*/
+	LCDNokia_clear();
+	LCDNokia_gotoXY(Begin_LCD,Begin_LCD); /*! It establishes the position to print the messages in the LCD*/
+	LCDNokia_sendString(string1); /*! It print a string stored in an array*/
+	LCDNokia_gotoXY(Begin_LCD,1); /*! It establishes the position to print the messages in the LCD*/
+	LCDNokia_sendString(string2); /*! It print a string stored in an array*/
+	LCDNokia_gotoXY(Begin_LCD,2); /*! It establishes the position to print the messages in the LCD*/
+	LCDNokia_sendString(string3); /*! It print a string stored in an array*/
+	LCDNokia_gotoXY(Begin_LCD,3); /*! It establishes the position to print the messages in the LCD*/
+	LCDNokia_sendChar(IntToString+48); /*! It print a string stored in an array*/
+	LCDNokia_sendChar(IntToString2+48); /*! It print a string stored in an array*/
+	LCDNokia_sendChar(IntToString3+48); /*! It print a string stored in an array*/
+	LCDNokia_sendString(string4); /*! It print a string stored in an array*/
+	delay(DelayValue);
+
+	delay(DelayValue);
+}
+
+void Tremolo_LCD(uint8 Value)
+{
+	IntToString = Value/100;
+	IntToString2 = ((Value-(IntToString*100))/10);
+	IntToString3 = (Value-(IntToString*100)-(IntToString2*10));
+	uint8 string1[]="  Tremolo"; /*! String to be printed in the LCD*/
+	uint8 string2[]="  Effect "; /*! String to be printed in the LCD*/
+	uint8 string3[]="B0)+ B1)-"; /*! String to be printed in the LCD*/
+	uint8 string4[]="%"; /*! String to be printed in the LCD*/
+	LCDNokia_clear();
+	LCDNokia_gotoXY(Begin_LCD,Begin_LCD); /*! It establishes the position to print the messages in the LCD*/
+	LCDNokia_sendString(string1); /*! It print a string stored in an array*/
+	LCDNokia_gotoXY(Begin_LCD,1); /*! It establishes the position to print the messages in the LCD*/
+	LCDNokia_sendString(string2); /*! It print a string stored in an array*/
+	LCDNokia_gotoXY(Begin_LCD,2); /*! It establishes the position to print the messages in the LCD*/
+	LCDNokia_sendString(string3); /*! It print a string stored in an array*/
+	LCDNokia_gotoXY(Begin_LCD,3); /*! It establishes the position to print the messages in the LCD*/
+	LCDNokia_sendChar(IntToString+48); /*! It print a string stored in an array*/
+	LCDNokia_sendChar(IntToString2+48); /*! It print a string stored in an array*/
+	LCDNokia_sendChar(IntToString3+48); /*! It print a string stored in an array*/
+	LCDNokia_sendString(string4); /*! It print a string stored in an array*/
+	delay(DelayValue);
+}
+
+void Distorsion_LCD(uint8 Value)
+{
+	IntToString = Value/100;
+	IntToString2 = ((Value-(IntToString*100))/10);
+	IntToString3 = (Value-(IntToString*100)-(IntToString2*10));
+	uint8 string1[]=" Distorsion"; /*! String to be printed in the LCD*/
+	uint8 string2[]="  Effect "; /*! String to be printed in the LCD*/
+	uint8 string3[]="B0)+ B1)-"; /*! String to be printed in the LCD*/
+	uint8 string4[]="%"; /*! String to be printed in the LCD*/
+	LCDNokia_clear();
+	LCDNokia_gotoXY(Begin_LCD,Begin_LCD); /*! It establishes the position to print the messages in the LCD*/
+	LCDNokia_sendString(string1); /*! It print a string stored in an array*/
+	LCDNokia_gotoXY(Begin_LCD,1); /*! It establishes the position to print the messages in the LCD*/
+	LCDNokia_sendString(string2); /*! It print a string stored in an array*/
+	LCDNokia_gotoXY(Begin_LCD,2); /*! It establishes the position to print the messages in the LCD*/
+	LCDNokia_sendString(string3); /*! It print a string stored in an array*/
+	LCDNokia_gotoXY(Begin_LCD,3); /*! It establishes the position to print the messages in the LCD*/
+	LCDNokia_sendChar(IntToString+48); /*! It print a string stored in an array*/
+	LCDNokia_sendChar(IntToString2+48); /*! It print a string stored in an array*/
+	LCDNokia_sendChar(IntToString3+48); /*! It print a string stored in an array*/
+	LCDNokia_sendString(string4); /*! It print a string stored in an array*/
+	delay(DelayValue);
+}
+
+void Erasing_Memory_LCD()
+{
+	uint8 string1[]=" Erasing"; /*! String to be printed in the LCD*/
+	uint8 string2[]="  Memory "; /*! String to be printed in the LCD*/
+	LCDNokia_clear();
+	LCDNokia_gotoXY(Begin_LCD,1); /*! It establishes the position to print the messages in the LCD*/
+	LCDNokia_sendString(string1); /*! It print a string stored in an array*/
+	LCDNokia_gotoXY(Begin_LCD,2); /*! It establishes the position to print the messages in the LCD*/
+	LCDNokia_sendString(string2); /*! It print a string stored in an array*/
+	delay(DelayValue);
+}
+
+void Memory_Erase_LCD()
+{
+	uint8 string1[]=" Memory"; /*! String to be printed in the LCD*/
+	uint8 string2[]="  Erase "; /*! String to be printed in the LCD*/
+	LCDNokia_clear();
+	LCDNokia_gotoXY(Begin_LCD,Begin_LCD); /*! It establishes the position to print the messages in the LCD*/
+	LCDNokia_sendString(string1); /*! It print a string stored in an array*/
+	LCDNokia_gotoXY(Begin_LCD,1); /*! It establishes the position to print the messages in the LCD*/
+	LCDNokia_sendString(string2); /*! It print a string stored in an array*/
+	delay(DelayValue);
+}
+
+void Memory_Is_Full_LCD()
+{
+	uint8 string1[]=" Memory is"; /*! String to be printed in the LCD*/
+	uint8 string2[]="  Full "; /*! String to be printed in the LCD*/
+	LCDNokia_clear();
+	LCDNokia_gotoXY(Begin_LCD,Begin_LCD); /*! It establishes the position to print the messages in the LCD*/
+	LCDNokia_sendString(string1); /*! It print a string stored in an array*/
+	LCDNokia_gotoXY(1,Begin_LCD); /*! It establishes the position to print the messages in the LCD*/
+	LCDNokia_sendString(string2); /*! It print a string stored in an array*/
+	delay(DelayValue);
+}

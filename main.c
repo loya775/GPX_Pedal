@@ -42,6 +42,7 @@
 #include "S25FLXXX.h"
 #include "SPI.h"
 #include "LCD_Writing.h"
+#include "FunctionRotate.h"
 #define SC1FLAG 0x1F
 #define SC3FlAG 0x07
 #define SPI_CHANNEL		SPI_0
@@ -125,11 +126,10 @@ uint8 MMU_waitingFunction()
 
 int main(void) {
 	uint16 Sample;
-	uint16 DacValue;
+	uint8 Memory_Write_Flag = 0;
 	uint16 Counter=0;
+	uint8 FlagLooper=0;
 	uint16 Counter2=0;
-	//uint8 Prove;
-	//uint8 Prove2;
 	uint8 Value=0;
 	uint8 Value2=0;
 	uint8 SC1cfg = SC1FLAG;
@@ -140,14 +140,30 @@ int main(void) {
 	GPIO_pinControlRegisterType pinControlRegisterGPIOCPortC = GPIO_MUX1|INTR_FALLING_EDGE;
 	GPIO_pinControlRegisterType pinControlRegisterGPIOBPortB = GPIO_MUX1;
 	GPIO_clockGating(GPIO_C);
+	GPIO_clockGating(GPIO_D);
 	GPIO_pinControlRegister(GPIO_C,BIT5,&pinControlRegisterGPIOCPortC);
 	GPIO_dataDirectionPIN(GPIO_C, GPIO_INPUT, BIT5);
+	GPIO_pinControlRegister(GPIO_D,BIT0,&pinControlRegisterGPIOBPortB);
+	GPIO_dataDirectionPIN(GPIO_D, GPIO_OUTPUT, BIT0);
+	GPIO_pinControlRegister(GPIO_C,BIT1,&pinControlRegisterGPIOBPortB);
+	GPIO_dataDirectionPIN(GPIO_C, GPIO_INPUT, BIT1);
+	GPIO_pinControlRegister(GPIO_C,BIT11,&pinControlRegisterGPIOBPortB);
+	GPIO_dataDirectionPIN(GPIO_C, GPIO_INPUT, BIT11);
+	GPIO_pinControlRegister(GPIO_C,BIT16,&pinControlRegisterGPIOBPortB);
+	GPIO_dataDirectionPIN(GPIO_C, GPIO_INPUT, BIT16);
+	GPIO_pinControlRegister(GPIO_C,BIT17,&pinControlRegisterGPIOBPortB);
+	GPIO_dataDirectionPIN(GPIO_C, GPIO_INPUT, BIT17);
 	GPIO_clockGating(GPIO_B);
 	GPIO_pinControlRegister(GPIO_B,BIT18,&pinControlRegisterGPIOBPortB);
 	GPIO_dataDirectionPIN(GPIO_B, GPIO_INPUT, BIT18);
+	GPIO_pinControlRegister(GPIO_B,BIT23,&pinControlRegisterGPIOBPortB);
+	GPIO_dataDirectionPIN(GPIO_B, GPIO_INPUT, BIT23);
+	GPIO_pinControlRegister(GPIO_B,BIT19,&pinControlRegisterGPIOBPortB);
+	GPIO_dataDirectionPIN(GPIO_B, GPIO_INPUT, BIT19);
 	NVIC_enableInterruptAndPriotity(PORTC_IRQ, PRIORITY_5);
 	ADC_initialize(&ADC,SC1cfg,SC2cfg,SC3cfg);
 	FlexTimer_Init(&FTM_Config);
+	GPIO_setPIN(GPIO_D, BIT0);
     //SIM->SCGC5 |= GPIO_CLOCK_GATING_PORTA|GPIO_CLOCK_GATING_PORTC;
 	//PORTC->PCR[1]   = PORT_PCR_MUX(0x4);
 	NVIC_enableInterruptAndPriotity(FTM0_IRQ, PRIORITY_1);
@@ -157,76 +173,105 @@ int main(void) {
 	S25FLXXX_MemoryAddressType S25FLXXX_MemoryAddress = {0};
 	S25FLXXX_MemoryAddress.address = 0;
 	SPI_init(&SPI_ConfigMemory);
-	S25FLXXX_writeByte(0x40,&S25FLXXX_MemoryAddress,&SPIChannelForMemory);
-	MMU_waitingFunction();
-	Value = S25FLXXX_readByte(&S25FLXXX_MemoryAddress,&SPIChannelForMemory);
-	MMU_waitingFunction();
-
-	S25FLXXX_EraseMemory(&SPIChannelForMemory);
-	MMU_waitingFunction();
 	LCDNokia_init();
 	LCDNokia_clear();
 	Inicio_LCD();
+	SPI_init(&SPI_ConfigMemory);
     while(TRUE)
     {
 
-    	if(GPIO_getIRQStatus(GPIO_C))
+    	/**If the interruptions is activated we start to save value from the ADC in the Memory*/
+    	if(GPIO_getIRQStatus(GPIO_C) && !Memory_Write_Flag)
     	{
     		GPIO_clearIRQStatus(GPIO_C);
+    		Saving_Memory_LCD();
+    		SPI_init(&SPI_ConfigMemory);
     		Counter=0;
-    			while(!GPIO_getIRQStatus(GPIO_C) && Counter <= Top)
+    			while(!GPIO_getIRQStatus(GPIO_C) && S25FLXXX_MemoryAddress.address <= Top)
     			{
     				if(getFlexFlag())
     				{
 
     					Sample = StartConversion(&ADC);
-    					GPIO_clearIRQStatus(GPIO_C);
     					Data_Bits.address = Sample;
-    					Value = Data_Bits.addressByByte.addressByte0;
-    					Value2 = Data_Bits.addressByByte.addressByte1;
-
-    					S25FLXXX_writeByte(Value,&S25FLXXX_MemoryAddress,&SPIChannelForMemory);
-    					MMU_waitingFunction();
-    					//Prove = S25FLXXX_readByte(&S25FLXXX_MemoryAddress,&SPIChannelForMemory);
+    					S25FLXXX_writeByte(Data_Bits.addressByByte.addressByte0,&S25FLXXX_MemoryAddress,&SPIChannelForMemory);
     					MMU_waitingFunction();
     					S25FLXXX_MemoryAddress.address += 1;
-    					S25FLXXX_writeByte(Value2,&S25FLXXX_MemoryAddress,&SPIChannelForMemory);
+    					S25FLXXX_writeByte(Data_Bits.addressByByte.addressByte1,&S25FLXXX_MemoryAddress,&SPIChannelForMemory);
     					MMU_waitingFunction();
-    					//Prove2 = S25FLXXX_readByte(&S25FLXXX_MemoryAddress,&SPIChannelForMemory);
-    					GPIO_clearIRQStatus(GPIO_C);
-    					MMU_waitingFunction();
-    					DAC0_write(Sample);
     					S25FLXXX_MemoryAddress.address += 1;
-    					Counter=S25FLXXX_MemoryAddress.address;
     					clearFlexFlag();
     				}
 
     			}
+    			Saving_Finish_LCD();
+    			Memory_Write_Flag = TRUE;
+    			SPI_init(&SPI_ConfigMemory);
+    			Counter=S25FLXXX_MemoryAddress.address;
+    			S25FLXXX_MemoryAddress.address = 0;
+    			GPIO_clearIRQStatus(GPIO_C);
+    	}else if(GPIO_getIRQStatus(GPIO_C))
+    	{
+    		GPIO_clearIRQStatus(GPIO_C);
+    		Memory_Is_Full_LCD();
+    		SPI_init(&SPI_ConfigMemory);
+    		delay(20000);
+    	}
+
+
+
+/**Activate or deactivate LOOPER MODE*/
+    	if(GPIO_readPIN(GPIO_B, BIT19))
+    	{
+    		if(FlagLooper==0)
+    		{
+    			FlagLooper=1;
+    			LOOPER_ON_LCD();
+    			SPI_init(&SPI_ConfigMemory);
+    		}else
+    		{
+    			FlagLooper=0;
+    			LOOPER_OFF_LCD();
+    			SPI_init(&SPI_ConfigMemory);
     		}
+    	}
 
+    	/**If FlagLooper is in TRUE we read the memory and we take it out by the DAC */
 
-
-
-
-    	S25FLXXX_MemoryAddress.address = 0;
+    	if(FlagLooper == TRUE)
+    	{
+    	S25FLXXX_MemoryAddress.address = Looper_Memory(S25FLXXX_MemoryAddress, Counter, SPIChannelForMemory);
     	Value = S25FLXXX_readByte(&S25FLXXX_MemoryAddress,&SPIChannelForMemory);
     	S25FLXXX_MemoryAddress.address += 1;
     	Value2 = S25FLXXX_readByte(&S25FLXXX_MemoryAddress,&SPIChannelForMemory);
     	S25FLXXX_MemoryAddress.address += 1;
     	Data_Bits.addressByByte.addressByte0=Value;
     	Data_Bits.addressByByte.addressByte1=Value2;
-    	DacValue = Data_Bits.address;
-    	DAC0_write(DacValue);
-    	Counter2 += S25FLXXX_MemoryAddress.address;
-
-    	if (Counter2 == Counter)
-    	{
-    		Counter2=0;
-
+    	DAC0_write(Data_Bits.address);
+    	/*If Counter2 is in his Max Value we restarted */
+    	if (S25FLXXX_MemoryAddress.address >= Counter)
+    		S25FLXXX_MemoryAddress.address=0;
     	}
+
+    	/**Choose wich Effect you want depending how many times you push it*/
+    	if(GPIO_readPIN(GPIO_C, BIT11))
+    	{
+    		choose_function(FlagLooper, S25FLXXX_MemoryAddress, Counter, SPIChannelForMemory);
+    		SPI_init(&SPI_ConfigMemory);
+    		S25FLXXX_MemoryAddress.address=0;
+    	}
+
+
     	if(GPIO_readPIN(GPIO_B, BIT18))
     	{
-
+    		Erasing_Memory_LCD();
+    		SPI_init(&SPI_ConfigMemory);
+    		S25FLXXX_EraseMemory(&SPIChannelForMemory);
+    		MMU_waitingFunction();
+    		Memory_Erase_LCD();
+    		SPI_init(&SPI_ConfigMemory);
+    		Memory_Write_Flag = FALSE;
+    		delay(10000);
     	}
     }
     return 0 ;

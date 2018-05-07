@@ -190,4 +190,5 @@ void S25FLXXX_chipErase(MemoryPortType* SPIChannel);
  uint16 GetAddress(void);
  void S25FLXXX_EraseMemory(MemoryPortType* SPIChannel);
  void S25FLXXX_write(uint8 byteToWrite,S25FLXXX_MemoryAddressType* address, MemoryPortType* SPIChannel);
+ uint32 Looper_Memory(S25FLXXX_MemoryAddressType address, uint32 Counter, MemoryPortType SPIChannel);
 #endif /* S25FLXXX_H_ */

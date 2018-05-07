@@ -10,6 +10,7 @@
 
 #include "DataTypeDefinitions.h"
 #include "GPIO.h"
+#include "MK64F12.h"
 
 #define SPI0_CLOCK_GATING 0x1000
 #define SPI1_CLOCK_GATING 0x2000

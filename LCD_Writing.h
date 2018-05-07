@@ -20,5 +20,29 @@
  */
 void Inicio_LCD();
 
+void LOOPER_OFF_LCD();
 
+void LOOPER_ON_LCD();
+
+void Saving_Memory_LCD();
+
+void Saving_Finish_LCD();
+
+void Tremolo_LCD(uint8 Value);
+
+void Chorus_LCD(uint8 Value);
+
+void Resonator_LCD(uint8 Value);
+
+void Flanger_LCD(uint8 Value);
+
+void Wah_wah_LCD(uint8 Value);
+
+void Distorsion_LCD(uint8 Value);
+
+void Memory_Erase_LCD();
+
+void Erasing_Memory_LCD();
+
+void Memory_Is_Full_LCD();
 #endif /* LCD_WRITING_H_ */

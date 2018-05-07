@@ -30,6 +30,7 @@ uint32 Value;
 uint32 dummie;
 uint8 Flag;
 /*This function activates when the FTM1_IRQHandler is activated we turn on a flag who say us when we got a take a value from our temperature sensor*/
+
 void FTM0_IRQHandler()
 {
 	FTM0->SC &= ~FLEX_TIMER_TOF;

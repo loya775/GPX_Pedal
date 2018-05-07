@@ -152,9 +152,9 @@ void LCDNokia_writeByte(uint8 DataOrCmd, uint8 data)
 	else
 		GPIO_clearPIN(GPIO_C, DATA_OR_CMD_PIN);
 	
-	SPI_startTranference(SPI_0);
+	SPI_startTranference2(SPI_0);
 	SPI_sendOneByte(data);
-	SPI_stopTranference(SPI_0);
+	SPI_stopTranference2(SPI_0);
 }
 
 void LCDNokia_sendChar(uint8 character) {
