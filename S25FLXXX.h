@@ -7,12 +7,9 @@
 
 #ifndef S25FLXXX_H_
 #define S25FLXXX_H_
-
-
 #include "DataTypeDefinitions.h"
 #include "SPI.h"
 #include "GPIO.h"
-
 
 #define READ_CMD 0x03
 #define WREN_CMD 0x06
@@ -163,7 +160,7 @@ void S25FLXXX_writePointer(S25FLXXX_AddressPointerType* pointer,S25FLXXX_MemoryA
 
 void S25FLXXX_readID(uint8*);
 void S25FLXXX_writeBytes(uint8 *,S25FLXXX_MemoryAddressType* address, MemoryPortType*, uint32 numberOfBytes);
-void S25FLXXX_writeByte(uint8 byteToWrite,S25FLXXX_MemoryAddressType* address, MemoryPortType* SPIChannel);
+void S25FLXXX_writeByte(uint8 byteToWrite, uint8 byteToWrite2, S25FLXXX_MemoryAddressType* address, MemoryPortType* SPIChannel);
 
 
 
@@ -191,4 +188,5 @@ void S25FLXXX_chipErase(MemoryPortType* SPIChannel);
  void S25FLXXX_EraseMemory(MemoryPortType* SPIChannel);
  void S25FLXXX_write(uint8 byteToWrite,S25FLXXX_MemoryAddressType* address, MemoryPortType* SPIChannel);
  uint32 Looper_Memory(S25FLXXX_MemoryAddressType address, uint32 Counter, MemoryPortType SPIChannel);
+ uint8 MMU_waitingFunction();
 #endif /* S25FLXXX_H_ */

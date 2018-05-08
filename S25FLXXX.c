@@ -12,6 +12,19 @@
 #include "ADCDriver.h"
 #include "GPIO.h"
 #include "DAC.h"
+#define SC1FLAG 0x1F
+#define SC3FlAG 0x07
+#define SPI_CHANNEL		SPI_0
+#define SPI_PORT		GPIO_D
+#define SPI_MOSI_BIT	BIT2
+#define SPI_MISO_BIT 	BIT3
+#define SPI_CLK			BIT1
+#define SPI_PIN_CONFIG  GPIO_MUX2|GPIO_DSE
+
+
+#define SPI_CS_PORT		GPIO_D
+#define SPI_CS_BIT		BIT0
+#define SPI_CS_CONFIG	GPIO_MUX1|GPIO_DSE
 uint16 PageValue;
 uint16 AddressValue;
 uint16 DacValue;
@@ -199,7 +212,7 @@ void S25FLXXX_readID(uint8* mfgAndID)
 
 }
 
-void S25FLXXX_writeByte(uint8 byteToWrite,S25FLXXX_MemoryAddressType* address, MemoryPortType* SPIChannel)
+void S25FLXXX_writeByte(uint8 byteToWrite, uint8 byteToWrite2,S25FLXXX_MemoryAddressType* address, MemoryPortType* SPIChannel)
 {
 	GPIO_clearPIN(SPIChannel->PortName, SPIChannel->chipEnableBit);
 	SPI_transfer(SPIChannel->SPI_channel, WREN_CMD);
@@ -287,8 +300,6 @@ void S25FLXXX_readBytes(uint8* bytesToRead,S25FLXXX_MemoryAddressType* address, 
 		bytesToRead[index] =receivedData;
 	}
 	GPIO_setPIN(SPIChannel->PortName, SPIChannel->chipEnableBit);
-
-
 }
 
 
@@ -297,6 +308,7 @@ void S25FLXXX_readBytes(uint8* bytesToRead,S25FLXXX_MemoryAddressType* address, 
 {
 	return PageValue;
 }
+
  uint16 GetAddress(void)
 {
 	return AddressValue;
@@ -343,3 +355,25 @@ void S25FLXXX_readBytes(uint8* bytesToRead,S25FLXXX_MemoryAddressType* address, 
  	return address.address;
  }
 
+ uint8 MMU_waitingFunction()
+ {
+
+ 	MemoryPortType SPIChannelForMemory = {
+ 					SPI_CHANNEL,
+ 					SPI_CS_PORT,
+ 					SPI_CS_BIT,
+ 			};
+
+ 	uint8 status;
+
+
+ 	do {
+ 		status = S25FLXXX_readStatusRegister(STATUS_REGISTER_1,&SPIChannelForMemory);
+ 		status = status & 0x01;
+
+ 	}
+ 	while(status);
+
+ 	return(FALSE);
+
+ }

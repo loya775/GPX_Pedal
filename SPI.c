@@ -318,11 +318,11 @@ void SPI_init(const SPI_ConfigType* SPI_Config)
 	GPIO_pinControlRegister(SPI_Config->GPIOForSPI.GPIO_portName,SPI_Config->GPIOForSPI.SPI_CLK,&(SPI_Config->GPIOForSPI.pinConttrolRegister));
 	GPIO_pinControlRegister(SPI_Config->GPIOForSPI.GPIO_portName,SPI_Config->GPIOForSPI.SPI_SOUT,&(SPI_Config->GPIOForSPI.pinConttrolRegister));
 	GPIO_pinControlRegister(SPI_Config->GPIOForSPI.GPIO_portName,SPI_Config->GPIOForSPI.SPI_SIN,&(SPI_Config->GPIOForSPI.pinConttrolRegister));
-/*
+
 	if (!SPI_Config->SPI_Master)
 		GPIO_pinControlRegister(SPI_Config->GPIOForSPI.GPIO_portName,SPI_Config->GPIOForSPI.SPI_CS,&(SPI_Config->GPIOForSPI.pinConttrolRegister));
 	else
-		GPIO_pinControlRegister(SPI_Config->GPIOForSPI.GPIO_portName,SPI_Config->GPIOForSPI.SPI_CS,&(SPI_Config->GPIOForSPI.pinConttrolRegisterCS));*/
+		GPIO_pinControlRegister(SPI_Config->GPIOForSPI.GPIO_portName,SPI_Config->GPIOForSPI.SPI_CS,&(SPI_Config->GPIOForSPI.pinConttrolRegisterCS));
 	SPI_enable(SPI_Config->SPI_Channel);
 	SPI_setMaster(SPI_Config->SPI_Channel,SPI_Config->SPI_Master);
 	SPI_fIFO(SPI_Config->SPI_Channel,SPI_Config->SPI_EnableFIFO);
@@ -331,7 +331,7 @@ void SPI_init(const SPI_ConfigType* SPI_Config)
 	SPI_clockPhase(SPI_Config->SPI_Channel,SPI_Config->SPI_Phase);
 	SPI_baudRate(SPI_Config->SPI_Channel,SPI_Config->baudrate,SPI_Config->doubleBaudRate);
 	SPI_mSBFirst(SPI_Config->SPI_Channel,SPI_MSB);
-	//SPI_CSInactiveState(SPI_Config->SPI_Channel,SPI_Config->idleState);
+	SPI_CSInactiveState(SPI_Config->SPI_Channel,SPI_Config->idleState);
 
 	if (!SPI_Config->SPI_Master)
 		SPI_setSlave(SPI_Config->SPI_Channel, SPI_Config->frameSize, SPI_Config->SPI_Polarity, SPI_Config->SPI_Phase);

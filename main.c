@@ -29,20 +29,27 @@
  */
  
 /**
- * @file    ADC_FOR_GUITAR.c
+ * @file    MenuProyect.c
  * @brief   Application entry point.
  */
 #include <stdio.h>
-#include "MK64F12.h"
-#include "ADCDriver.h"
 #include "DataTypeDefinitions.h"
-#include "FlexTimer.h"
-#include "NVIC.h"
+#include "MK64F12.h"
 #include "DAC.h"
-#include "S25FLXXX.h"
+#include "ADCDriver.h"
+#include "FlexTimer.h"
+#include "MCG.h"
+#include "NVIC.h"
+#include "Button_init.h"
 #include "SPI.h"
-#include "LCD_Writing.h"
+#include "UART.h"
+#include "S25FLXXX.h"
+#include "WriteConsole.h"
 #include "FunctionRotate.h"
+
+#define SC1FLAG 0x1F
+#define SC3FlAG 0x07
+
 #define SC1FLAG 0x1F
 #define SC3FlAG 0x07
 #define SPI_CHANNEL		SPI_0
@@ -52,6 +59,20 @@
 #define SPI_CLK			BIT1
 #define SPI_PIN_CONFIG  GPIO_MUX2|GPIO_DSE
 
+#define CLK_FREQ_HZ 50000000  /* CLKIN0 frequency */
+#define SLOW_IRC_FREQ 32768	/*This is the approximate value for the slow irc*/
+#define FAST_IRC_FREQ 4000000 /*This is the approximate value for the fast irc*/
+#define EXTERNAL_CLOCK 0 /*It defines an external clock*/
+#define PLL_ENABLE 1 /**PLL is enabled*/
+#define PLL_DISABLE 0 /**PLL is disabled*/
+#define CRYSTAL_OSC 1  /*It defines an crystal oscillator*/
+#define LOW_POWER 0     /* Set the oscillator for low power mode */
+#define SLOW_IRC 0 		/* Set the slow IRC */
+#define CLK0_TYPE 0     /* Crystal or canned oscillator clock input */
+#define PLL0_PRDIV 25    /* PLL predivider value */
+#define PLL0_VDIV 30    /* PLL multiplier value*/
+
+#define Clock 21000000
 
 #define SPI_CS_PORT		GPIO_D
 #define SPI_CS_BIT		BIT0
@@ -61,218 +82,123 @@
 #define BEGINNING_OF_FIRST_SECTOR 0x000000
 /**End of the first sector of the memory*/
 #define END_OF_FIRST_SECTOR   0x000FFF
-		const SPI_ConfigType SPI_ConfigMemory={
-				SPI_DISABLE_FIFO,
-				SPI_LOW_POLARITY,
-				SPI_LOW_PHASE,
-				SPI_MSB,
-				SPI_CHANNEL,
-				SPI_MASTER,
-				SPI_BAUD_RATE_2,// It represent the SPI pre-scaler
-				SPI_DOUBLE_BAUD_RATE,// It doubles the baud rate
-				SPI_FSIZE_8,
-				SPI_CS_HIGH,
-				{SPI_PORT,SPI_MOSI_BIT,SPI_MISO_BIT,
-				SPI_CLK,SPI_CS_BIT,
-				SPI_PIN_CONFIG,SPI_CS_CONFIG}};
 
 
+const SPI_ConfigType SPI_ConfigMemory={
+	SPI_DISABLE_FIFO,
+	SPI_LOW_POLARITY,
+	SPI_LOW_PHASE,
+	SPI_MSB,
+	SPI_CHANNEL,
+	SPI_MASTER,
+	SPI_BAUD_RATE_2,// It represent the SPI pre-scaler
+	SPI_DOUBLE_BAUD_RATE,// It doubles the baud rate
+	SPI_FSIZE_8,
+	SPI_CS_HIGH,
+	{SPI_PORT,SPI_MOSI_BIT,SPI_MISO_BIT,
+	SPI_CLK,SPI_CS_BIT,
+	SPI_PIN_CONFIG,SPI_CS_CONFIG}};
 		/**This is the bit that is used for the chip select in the SPI*/
-		MemoryPortType SPIChannelForMemory = {
-						SPI_CHANNEL,
-						SPI_CS_PORT,
-						SPI_CS_BIT,
-			  	};
+
+MemoryPortType SPIChannelForMemory = {
+	SPI_CHANNEL,
+	SPI_CS_PORT,
+	SPI_CS_BIT,
+	};
 
 
 
-uint8 MMU_waitingFunction()
+const FTM_ConfigType FTM_Config={
+	FTM_0,
+	FTM_OutputC_Toogle
+	};
+
+const ADC_ConfigType ADC  = {
+	0,
+	ADC0Type,
+	NORMAL_POWER,
+	RATIO1,
+	SHORT_SAMPLE,
+	CONV12,
+	BUSCLK
+};
+
+int main(void)
 {
-
-	MemoryPortType SPIChannelForMemory = {
-					SPI_CHANNEL,
-					SPI_CS_PORT,
-					SPI_CS_BIT,
-			};
-
-	uint8 status;
-
-
-	do {
-		status = S25FLXXX_readStatusRegister(STATUS_REGISTER_1,&SPIChannelForMemory);
-		status = status & 0x01;
-
-	}
-	while(status);
-
-	return(FALSE);
-
-}
-
-	const FTM_ConfigType FTM_Config={
-			FTM_0,
-			FTM_OutputC_Toogle
-	};
-
-	const ADC_ConfigType ADC  = {
-			0,
-			ADC0Type,
-			NORMAL_POWER,
-			RATIO1,
-			SHORT_SAMPLE,
-			CONV12,
-			BUSCLK
-	};
-
-int main(void) {
-	uint16 Sample;
-	uint8 Memory_Write_Flag = 0;
-	uint16 Counter=0;
-	uint8 FlagLooper=0;
-	uint16 Counter2=0;
-	uint8 Value=0;
-	uint8 Value2=0;
+	S25FLXXX_MemoryAddressType S25FLXXX_MemoryAddress = {0};
 	uint8 SC1cfg = SC1FLAG;
 	uint8 SC2cfg = 0;
-	uint32 Top=0x1FFFFF;
 	uint8 SC3cfg = SC3FlAG;
-	GUITAR_DATA Data_Bits = {0};
-	GPIO_pinControlRegisterType pinControlRegisterGPIOCPortC = GPIO_MUX1|INTR_FALLING_EDGE;
-	GPIO_pinControlRegisterType pinControlRegisterGPIOBPortB = GPIO_MUX1;
-	GPIO_clockGating(GPIO_C);
-	GPIO_clockGating(GPIO_D);
-	GPIO_pinControlRegister(GPIO_C,BIT5,&pinControlRegisterGPIOCPortC);
-	GPIO_dataDirectionPIN(GPIO_C, GPIO_INPUT, BIT5);
-	GPIO_pinControlRegister(GPIO_D,BIT0,&pinControlRegisterGPIOBPortB);
-	GPIO_dataDirectionPIN(GPIO_D, GPIO_OUTPUT, BIT0);
-	GPIO_pinControlRegister(GPIO_C,BIT1,&pinControlRegisterGPIOBPortB);
-	GPIO_dataDirectionPIN(GPIO_C, GPIO_INPUT, BIT1);
-	GPIO_pinControlRegister(GPIO_C,BIT11,&pinControlRegisterGPIOBPortB);
-	GPIO_dataDirectionPIN(GPIO_C, GPIO_INPUT, BIT11);
-	GPIO_pinControlRegister(GPIO_C,BIT16,&pinControlRegisterGPIOBPortB);
-	GPIO_dataDirectionPIN(GPIO_C, GPIO_INPUT, BIT16);
-	GPIO_pinControlRegister(GPIO_C,BIT17,&pinControlRegisterGPIOBPortB);
-	GPIO_dataDirectionPIN(GPIO_C, GPIO_INPUT, BIT17);
-	GPIO_clockGating(GPIO_B);
-	GPIO_pinControlRegister(GPIO_B,BIT18,&pinControlRegisterGPIOBPortB);
-	GPIO_dataDirectionPIN(GPIO_B, GPIO_INPUT, BIT18);
-	GPIO_pinControlRegister(GPIO_B,BIT23,&pinControlRegisterGPIOBPortB);
-	GPIO_dataDirectionPIN(GPIO_B, GPIO_INPUT, BIT23);
-	GPIO_pinControlRegister(GPIO_B,BIT19,&pinControlRegisterGPIOBPortB);
-	GPIO_dataDirectionPIN(GPIO_B, GPIO_INPUT, BIT19);
-	NVIC_enableInterruptAndPriotity(PORTC_IRQ, PRIORITY_5);
-	ADC_initialize(&ADC,SC1cfg,SC2cfg,SC3cfg);
-	FlexTimer_Init(&FTM_Config);
-	GPIO_setPIN(GPIO_D, BIT0);
-    //SIM->SCGC5 |= GPIO_CLOCK_GATING_PORTA|GPIO_CLOCK_GATING_PORTC;
-	//PORTC->PCR[1]   = PORT_PCR_MUX(0x4);
-	NVIC_enableInterruptAndPriotity(FTM0_IRQ, PRIORITY_1);
+	uint8 SelectFunction;
+	uint8 FlagForFunction = FALSE;
+	uint8 Probe;
+	uint8 Probe2;
+	uint8 Probe3;
+	S25FLXXX_MemoryAddress.address = 0;
+	GPIO_Initialize();
 	DAC0_clockGating();
 	DAC0_init();
+	ADC_initialize(&ADC,SC1cfg,SC2cfg,SC3cfg);
+	FlexTimer_Init(&FTM_Config);
+	UART_init (UART_0,  Clock, BD_115200);
+	UART0_interruptEnable(UART_0);
+	NVIC_enableInterruptAndPriotity(PORTC_IRQ, PRIORITY_5);
+	NVIC_enableInterruptAndPriotity(FTM0_IRQ, PRIORITY_1);
+	NVIC_enableInterruptAndPriotity(UART0_IRQ, PRIORITY_10);
 	EnableInterrupts;
-	S25FLXXX_MemoryAddressType S25FLXXX_MemoryAddress = {0};
-	S25FLXXX_MemoryAddress.address = 0;
 	SPI_init(&SPI_ConfigMemory);
-	LCDNokia_init();
-	LCDNokia_clear();
-	Inicio_LCD();
-	SPI_init(&SPI_ConfigMemory);
+	S25FLXXX_MemoryAddress.address = 0x04;
+	Probe = S25FLXXX_readByte(&S25FLXXX_MemoryAddress,&SPIChannelForMemory);
+	MMU_waitingFunction();
+	S25FLXXX_MemoryAddress.address = 0x05;
+	Probe2 = S25FLXXX_readByte(&S25FLXXX_MemoryAddress,&SPIChannelForMemory);
+	S25FLXXX_MemoryAddress.address = 0x1FFFF3;
+	Probe3 = S25FLXXX_readByte(&S25FLXXX_MemoryAddress,&SPIChannelForMemory);
+	S25FLXXX_MemoryAddress.address = 0x04;
+	S25FLXXX_writeByte(0x60,0x23,&S25FLXXX_MemoryAddress,&SPIChannelForMemory);
+	MMU_waitingFunction();
+	S25FLXXX_MemoryAddress.address = 0x04;
+	Probe = S25FLXXX_readByte(&S25FLXXX_MemoryAddress,&SPIChannelForMemory);
+	MMU_waitingFunction();
+	S25FLXXX_MemoryAddress.address = 0x05;
+	Probe2 = S25FLXXX_readByte(&S25FLXXX_MemoryAddress,&SPIChannelForMemory);
+	S25FLXXX_MemoryAddress.address = 0x1FFFF3;
+	Probe3 = S25FLXXX_readByte(&S25FLXXX_MemoryAddress,&SPIChannelForMemory);
+	MMU_waitingFunction();
+	FirstMenu();
     while(TRUE)
     {
 
-    	/**If the interruptions is activated we start to save value from the ADC in the Memory*/
-    	if(GPIO_getIRQStatus(GPIO_C) && !Memory_Write_Flag)
-    	{
-    		GPIO_clearIRQStatus(GPIO_C);
-    		Saving_Memory_LCD();
-    		SPI_init(&SPI_ConfigMemory);
-    		Counter=0;
-    			while(!GPIO_getIRQStatus(GPIO_C) && S25FLXXX_MemoryAddress.address <= Top)
-    			{
-    				if(getFlexFlag())
-    				{
-
-    					Sample = StartConversion(&ADC);
-    					Data_Bits.address = Sample;
-    					S25FLXXX_writeByte(Data_Bits.addressByByte.addressByte0,&S25FLXXX_MemoryAddress,&SPIChannelForMemory);
-    					MMU_waitingFunction();
-    					S25FLXXX_MemoryAddress.address += 1;
-    					S25FLXXX_writeByte(Data_Bits.addressByByte.addressByte1,&S25FLXXX_MemoryAddress,&SPIChannelForMemory);
-    					MMU_waitingFunction();
-    					S25FLXXX_MemoryAddress.address += 1;
-    					clearFlexFlag();
-    				}
-
-    			}
-    			Saving_Finish_LCD();
-    			Memory_Write_Flag = TRUE;
-    			SPI_init(&SPI_ConfigMemory);
-    			Counter=S25FLXXX_MemoryAddress.address;
-    			S25FLXXX_MemoryAddress.address = 0;
-    			GPIO_clearIRQStatus(GPIO_C);
-    	}else if(GPIO_getIRQStatus(GPIO_C))
-    	{
-    		GPIO_clearIRQStatus(GPIO_C);
-    		Memory_Is_Full_LCD();
-    		SPI_init(&SPI_ConfigMemory);
-    		delay(20000);
-    	}
-
-
-
-/**Activate or deactivate LOOPER MODE*/
-    	if(GPIO_readPIN(GPIO_B, BIT19))
-    	{
-    		if(FlagLooper==0)
+    		if(GPIO_readPIN(GPIO_C, BIT5))
     		{
-    			FlagLooper=1;
-    			LOOPER_ON_LCD();
-    			SPI_init(&SPI_ConfigMemory);
-    		}else
-    		{
-    			FlagLooper=0;
-    			LOOPER_OFF_LCD();
-    			SPI_init(&SPI_ConfigMemory);
+    			FlagForFunction = TRUE;
+    			SelectFunction = 0;
+    			delay(15000);
     		}
-    	}
+    		if(GPIO_readPIN(GPIO_C, BIT7))
+    		{
+    			SelectFunction = 1;
+    			FlagForFunction = TRUE;
+    			delay(15000);
+    		}
+    		if(GPIO_readPIN(GPIO_C, BIT0))
+    		{
+    			FlagForFunction = TRUE;
+    			SelectFunction = 2;
+    			delay(15000);
+    		}
 
-    	/**If FlagLooper is in TRUE we read the memory and we take it out by the DAC */
 
-    	if(FlagLooper == TRUE)
+    	if(FlagForFunction == TRUE)
     	{
-    	S25FLXXX_MemoryAddress.address = Looper_Memory(S25FLXXX_MemoryAddress, Counter, SPIChannelForMemory);
-    	Value = S25FLXXX_readByte(&S25FLXXX_MemoryAddress,&SPIChannelForMemory);
-    	S25FLXXX_MemoryAddress.address += 1;
-    	Value2 = S25FLXXX_readByte(&S25FLXXX_MemoryAddress,&SPIChannelForMemory);
-    	S25FLXXX_MemoryAddress.address += 1;
-    	Data_Bits.addressByByte.addressByte0=Value;
-    	Data_Bits.addressByByte.addressByte1=Value2;
-    	DAC0_write(Data_Bits.address);
-    	/*If Counter2 is in his Max Value we restarted */
-    	if (S25FLXXX_MemoryAddress.address >= Counter)
-    		S25FLXXX_MemoryAddress.address=0;
-    	}
-
-    	/**Choose wich Effect you want depending how many times you push it*/
-    	if(GPIO_readPIN(GPIO_C, BIT11))
-    	{
-    		choose_function(FlagLooper, S25FLXXX_MemoryAddress, Counter, SPIChannelForMemory);
-    		SPI_init(&SPI_ConfigMemory);
-    		S25FLXXX_MemoryAddress.address=0;
+    		choose_function(SelectFunction, S25FLXXX_MemoryAddress, SPIChannelForMemory, ADC);
+    		FlagForFunction = FALSE;
     	}
 
 
-    	if(GPIO_readPIN(GPIO_B, BIT18))
-    	{
-    		Erasing_Memory_LCD();
-    		SPI_init(&SPI_ConfigMemory);
-    		S25FLXXX_EraseMemory(&SPIChannelForMemory);
-    		MMU_waitingFunction();
-    		Memory_Erase_LCD();
-    		SPI_init(&SPI_ConfigMemory);
-    		Memory_Write_Flag = FALSE;
-    		delay(10000);
-    	}
     }
+
+    LooperActivated(SPIChannelForMemory);
+    Dac_Working(ADC);
     return 0 ;
 }

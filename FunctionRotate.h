@@ -12,61 +12,22 @@
 #include "GPIO.h"
 #include "GlobalFunctions.h"
 #include "S25FLXXX.h"
-
+#include "ADCDriver.h"
 typedef void(*const fptroToFunctions[9])(void);
 typedef float* (pftG)(const uint8*);
 
-/********************************************************************************************/
-/********************************************************************************************/
-/*!
- 	 \brief	 This function call to ReadMemoryMenu.
-
- 	 \return void
- */
-void Menu_Function1(uint8 Flag, S25FLXXX_MemoryAddressType address, uint32 Counter, MemoryPortType SPIChannel);
-/********************************************************************************************/
-/********************************************************************************************/
-/*!
- 	 \brief	 This function call to WriteMemoryMenu.
-
- 	 \return void
- */
-void Menu_Function2(uint8 Flag,S25FLXXX_MemoryAddressType address, uint32 Counter, MemoryPortType SPIChannel);
-/********************************************************************************************/
-/********************************************************************************************/
-/*!
- 	 \brief	 This function call to Establecer_Hora.
-
- 	 \return void
- */
-void Menu_Function3(uint8 Flag, S25FLXXX_MemoryAddressType address, uint32 Counter, MemoryPortType SPIChannel);
-/********************************************************************************************/
-/********************************************************************************************/
-/*!
- 	  \brief	 This function call to Establecer_Fecha.
-
- 	 \return void
- */
-void Menu_Function4(uint8 Flag, S25FLXXX_MemoryAddressType address, uint32 Counter, MemoryPortType SPIChannel);
-/********************************************************************************************/
-/********************************************************************************************/
-/*!
- 	 \brief	 This function call to Formato_Hora.
-
- 	 \return void
- */
-void Menu_Function5(uint8 Flag, S25FLXXX_MemoryAddressType address, uint32 Counter, MemoryPortType SPIChannel);
-/********************************************************************************************/
-/********************************************************************************************/
-/*!
- 	\brief	 This function call to Leer_Hora.
-
- 	 \return void
- */
-void Menu_Function6(uint8 Flag, S25FLXXX_MemoryAddressType address, uint32 Counter, MemoryPortType SPIChannel);
-
-void choose_function(uint8 FlagLooper, S25FLXXX_MemoryAddressType address, uint32 Counter, MemoryPortType SPIChannel);
 
 
+void choose_function(uint8 Function, S25FLXXX_MemoryAddressType address, MemoryPortType SPIChannel, ADC_ConfigType ADC);
+
+void Menu_For_Erase_Memory(S25FLXXX_MemoryAddressType address, MemoryPortType SPIChannel, ADC_ConfigType ADC);
+
+void Menu_For_Effect(S25FLXXX_MemoryAddressType address, MemoryPortType SPIChannel, ADC_ConfigType ADC);
+
+void Menu_For_Looper(S25FLXXX_MemoryAddressType address, MemoryPortType SPIChannel,ADC_ConfigType ADC);
+
+void Dac_Working(ADC_ConfigType ADC);
+
+void LooperActivated(MemoryPortType SPIChannel);
 
 #endif /* FUNCTIONROTATE_H_ */
