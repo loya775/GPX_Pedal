@@ -146,32 +146,14 @@ typedef union
 
 }S25FLXXX_ScheduleAddressType;
 
-/** These functions are used to store events in memory*/
-void S25FLXXX_writeEvent(S25FLXXX_EventType* event, S25FLXXX_MemoryAddressType* address,MemoryPortType* SPIChannel);
-
-
-void S25FLXXX_writeSchedule(S25FLXXX_ScheduleAddressType* pointer,S25FLXXX_MemoryAddressType* address, MemoryPortType* SPIChannel);
-
-
-
-
-void S25FLXXX_writePointer(S25FLXXX_AddressPointerType* pointer,S25FLXXX_MemoryAddressType* address, MemoryPortType* SPIChannel);
-
-
-void S25FLXXX_readID(uint8*);
 void S25FLXXX_writeBytes(uint8 *,S25FLXXX_MemoryAddressType* address, MemoryPortType*, uint32 numberOfBytes);
 void S25FLXXX_writeByte(uint8 byteToWrite, uint8 byteToWrite2, S25FLXXX_MemoryAddressType* address, MemoryPortType* SPIChannel);
-
-
-
-void S25FLXXX_writeUID(UID_MemoryType* uid ,S25FLXXX_MemoryAddressType* address, MemoryPortType* SPIChannel);
 
 
 
 void S25FLXXX_readBytes(uint8 *,S25FLXXX_MemoryAddressType*, MemoryPortType*, uint32);
 uint8 S25FLXXX_readByte(S25FLXXX_MemoryAddressType* address, MemoryPortType*);
 
-void S25FLXXX_fastRead(uint8 *,uint8*, MemoryPortType*, uint8);
 uint8 S25FLXXX_readStatusRegister(uint8 statusRegister,MemoryPortType* SPIChannel);
 void S25FLXXX_writeStatusRegister(uint8 data,MemoryPortType* SPIChannel);
 
@@ -182,9 +164,6 @@ uint8 S25FLXXX_ConfigurationRegister(void);
 
 void S25FLXXX_chipErase(MemoryPortType* SPIChannel);
 
- uint16 GetPage(void);
-
- uint16 GetAddress(void);
  void S25FLXXX_EraseMemory(MemoryPortType* SPIChannel);
  void S25FLXXX_write(uint8 byteToWrite,S25FLXXX_MemoryAddressType* address, MemoryPortType* SPIChannel);
  uint32 Looper_Memory(S25FLXXX_MemoryAddressType address, uint32 Counter, MemoryPortType SPIChannel);

@@ -9,6 +9,7 @@
 #include "MK64F12.h"
 #include "NVIC.h"
 #include "GPIO.h"
+#define OFFSET 48
 uint8 ToChar1;
 uint8 ToChar2;
 uint8 ToChar3;
@@ -33,6 +34,74 @@ void FirstMenu(){
 	return;
 }
 
+void Guardando_Aviso(){
+	/**The following sentences send strings to PC using the UART_putString function. Also, the string
+	 * is coded with terminal code*/
+	/** VT100 command for text in red and background in cyan*/
+	UART_putString(UART_0,"\033[0;32;46m");
+	/*VT100 command for clearing the screen*/
+	UART_putString(UART_0,"\033[2J");
+	/** VT100 command for text in red and background in green*/
+	UART_putString(UART_0,"\033[0;32;41m");
+	/** VT100 command for positioning the cursor in x and y position*/
+	/** VT100 command for positioning the cursor in x and y position*/
+	UART_putString(UART_0,"\033[1;0H");
+	UART_putString(UART_0, "B0) Guardando......\r");
+	return;
+}
+
+void Eliminando_Aviso(){
+	/**The following sentences send strings to PC using the UART_putString function. Also, the string
+	 * is coded with terminal code*/
+	/** VT100 command for text in red and background in cyan*/
+	UART_putString(UART_0,"\033[0;32;46m");
+	/*VT100 command for clearing the screen*/
+	UART_putString(UART_0,"\033[2J");
+	/** VT100 command for text in red and background in green*/
+	UART_putString(UART_0,"\033[0;32;41m");
+	/** VT100 command for positioning the cursor in x and y position*/
+	/** VT100 command for positioning the cursor in x and y position*/
+	UART_putString(UART_0,"\033[1;0H");
+	UART_putString(UART_0, "Eliminando....\r");
+	return;
+}
+
+void Elminado_Aviso(){
+	/**The following sentences send strings to PC using the UART_putString function. Also, the string
+	 * is coded with terminal code*/
+	/** VT100 command for text in red and background in cyan*/
+	UART_putString(UART_0,"\033[0;32;46m");
+	/*VT100 command for clearing the screen*/
+	UART_putString(UART_0,"\033[2J");
+	/** VT100 command for text in red and background in green*/
+	UART_putString(UART_0,"\033[0;32;41m");
+	/** VT100 command for positioning the cursor in x and y position*/
+	/** VT100 command for positioning the cursor in x and y position*/
+	UART_putString(UART_0,"\033[1;0H");
+	UART_putString(UART_0, "Eliminado\r");
+	UART_putString(UART_0,"\033[2;0H");
+	UART_putString(UART_0, "B1) Salir\r");
+	return;
+}
+
+void Guardado_Aviso(){
+	/**The following sentences send strings to PC using the UART_putString function. Also, the string
+	 * is coded with terminal code*/
+	/** VT100 command for text in red and background in cyan*/
+	UART_putString(UART_0,"\033[0;32;46m");
+	/*VT100 command for clearing the screen*/
+	UART_putString(UART_0,"\033[2J");
+	/** VT100 command for text in red and background in green*/
+	UART_putString(UART_0,"\033[0;32;41m");
+	/** VT100 command for positioning the cursor in x and y position*/
+	/** VT100 command for positioning the cursor in x and y position*/
+	UART_putString(UART_0,"\033[1;0H");
+	UART_putString(UART_0, "B0) Guardado Terminado\r");
+	UART_putString(UART_0,"\033[2;0H");
+	UART_putString(UART_0, "B1) Salir\r");
+	return;
+}
+
 void MenuForLooper(){
 	/**The following sentences send strings to PC using the UART_putString function. Also, the string
 	 * is coded with terminal code*/
@@ -45,11 +114,11 @@ void MenuForLooper(){
 	/** VT100 command for positioning the cursor in x and y position*/
 	/** VT100 command for positioning the cursor in x and y position*/
 	UART_putString(UART_0,"\033[1;0H");
-	UART_putString(UART_0, "B0) Guardar un Looper\r");
+	UART_putString(UART_0, "Menu de Looper\r");
 	UART_putString(UART_0,"\033[2;0H");
-	UART_putString(UART_0, "B1) Eliminar Memoria\r");
+	UART_putString(UART_0, "B0) Guardar un Looper\r");
 	UART_putString(UART_0,"\033[3;0H");
-	UART_putString(UART_0, "B2) Salir\r");
+	UART_putString(UART_0, "B1) Salir\r");
 	return;
 }
 
@@ -65,18 +134,20 @@ void MenuForEffect(){
 	/** VT100 command for positioning the cursor in x and y position*/
 	/** VT100 command for positioning the cursor in x and y position*/
 	UART_putString(UART_0,"\033[1;0H");
-	UART_putString(UART_0, "B0) Resonator\r");
+	UART_putString(UART_0, "Menu de Efectos\r");
 	UART_putString(UART_0,"\033[2;0H");
-	UART_putString(UART_0, "B1) Chorus\r");
+	UART_putString(UART_0, "B0) Slap Back\r");
 	UART_putString(UART_0,"\033[3;0H");
-	UART_putString(UART_0, "B2) Flanger\r");
+	UART_putString(UART_0, "B1) Chorus\r");
 	UART_putString(UART_0,"\033[4;0H");
-	UART_putString(UART_0, "B3) Wah_Wah\r");
+	UART_putString(UART_0, "B2) Flanger\r");
 	UART_putString(UART_0,"\033[5;0H");
-	UART_putString(UART_0, "B4) Tremolo\r");
+	UART_putString(UART_0, "B3) Clean\r");
 	UART_putString(UART_0,"\033[6;0H");
-	UART_putString(UART_0, "B5) Distorsion\r");
+	UART_putString(UART_0, "B4) Tremolo\r");
 	UART_putString(UART_0,"\033[7;0H");
+	UART_putString(UART_0, "B5) Distorsion\r");
+	UART_putString(UART_0,"\033[8;0H");
 	UART_putString(UART_0, "B6) Salir\r");
 	return;
 }
@@ -93,8 +164,10 @@ void MenuForEraseMemory(){
 	/** VT100 command for positioning the cursor in x and y position*/
 	/** VT100 command for positioning the cursor in x and y position*/
 	UART_putString(UART_0,"\033[1;0H");
-	UART_putString(UART_0, "B0) Borrar Memoria\r");
+	UART_putString(UART_0, "Menu para Borrar Memoria\r");
 	UART_putString(UART_0,"\033[2;0H");
+	UART_putString(UART_0, "B0) Borrar Memoria\r");
+	UART_putString(UART_0,"\033[3;0H");
 	UART_putString(UART_0, "B1) Regresar\r");
 	return;
 }
@@ -114,7 +187,7 @@ void Resonator_Menu(uint8 Percent){
 	/** VT100 command for positioning the cursor in x and y position*/
 	/** VT100 command for positioning the cursor in x and y position*/
 	UART_putString(UART_0,"\033[1;0H");
-	UART_putString(UART_0, " Resonator Effect\r");
+	UART_putString(UART_0, " SLAP_BACK Effect\r");
 	UART_putString(UART_0,"\033[2;0H");
 	UART_putString(UART_0, "B0)+ B1)- \r");
 	UART_putString(UART_0,"\033[3;0H");

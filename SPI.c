@@ -4,8 +4,7 @@
 #include "SPI.h"
 #include "GPIO.h"
 #include "DataTypeDefinitions.h"
-
-//#include  "GlobalFunctions.h"
+#include  "GlobalFunctions.h"
 
 
 uint8 ErrorFlagSPI = FALSE;
