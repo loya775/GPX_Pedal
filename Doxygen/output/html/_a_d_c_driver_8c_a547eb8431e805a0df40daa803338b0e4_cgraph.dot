@@ -1,0 +1,19 @@
+digraph "ADC_initialize"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node2 [label="ADC_initialize",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node2 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="GPIO_clockGating",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_g_p_i_o_8c.html#a621b0dc3536c64501a7a6c560b667355",tooltip="This function enables the GPIO clock by configuring the corresponding bit and register in the System ..."];
+  Node2 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="GPIO_dataDirectionPIN",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_g_p_i_o_8c.html#ab6dd1d7bf26b2a8127f5806288779dba",tooltip="This function configure specific pins of a GPIO port as input when 1 logic is written or output when ..."];
+  Node2 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="GPIO_pinControlRegister",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_g_p_i_o_8c.html#ab7610a9d041c1c33f8a3fbf348bf80ef"];
+  Node2 -> Node6 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="ADC_clk",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_a_d_c_driver_8c.html#a5e68f8e9a0547cd2ca65fa6d8cb56aa5",tooltip="It enables the ADC clock gating depending on the ADCNoType. "];
+  Node2 -> Node7 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 [label="ADC_Configuration",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_a_d_c_driver_8c.html#ab5ac986bc568ea3d97dc0f01de08a5ac",tooltip="This function modifies the value of CFG1, CFG2 and CFG3 registers. "];
+  Node2 -> Node8 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node8 [label="ADC_StatusControl",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_a_d_c_driver_8c.html#ae325b07f360e967dd8a5d210aecc3020",tooltip="It configures the SC1,SC2 and SC3 registers to specify modes of operation and other specifications..."];
+}

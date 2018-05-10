@@ -18,6 +18,13 @@
 #include "DAC.h"
 #include "SoundFX.h"
 
+#define DEBOUNCER 15000
+#define INITIALVALUEPOT 50
+#define INITIALVALUE 0
+#define STEPPOT 10
+#define TOPPOTVAL 100
+#define STEPONE 1
+#define LOWPOTVAL 0
 #define TOP 0x1FFFF0
 #define SC1FLAG 0x1F
 #define SC3FlAG 0x07
@@ -27,7 +34,7 @@
 #define SPI_MISO_BIT 	BIT3
 #define SPI_CLK			BIT1
 #define SPI_PIN_CONFIG  GPIO_MUX2|GPIO_DSE
-
+#define STEPADDRESS 0x1000
 
 #define SPI_CS_PORT		GPIO_D
 #define SPI_CS_BIT		BIT0
@@ -73,7 +80,7 @@ const Function FSMMoore[3]=
 /***/
 void Menu_For_Erase_Memory(S25FLXXX_MemoryAddressType address, MemoryPortType SPIChannel, ADC_ConfigType ADC)
 {
-	delay(15000);
+	delay(DEBOUNCER);
 	MenuForEraseMemory();
 	while(!GPIO_readPIN(GPIO_C, BIT7))
 	{
@@ -81,19 +88,16 @@ void Menu_For_Erase_Memory(S25FLXXX_MemoryAddressType address, MemoryPortType SP
 		Dac_Working(ADC, CLEAN);
 		if(GPIO_readPIN(GPIO_C, BIT5))
 		{
-			delay(15000);
+			delay(DEBOUNCER);
 			Eliminando_Aviso();
-			address.address = 0;
+			address.address = INITIALVALUE;
 			//Elminando_Aviso();
 			while(address.address < 0x1FFFFF)
 			{
 				S25FLXXX_erase4KbSector(&address, &SPIChannel);
-				address.address += 0x1000;
+				address.address += STEPADDRESS;
 				MMU_waitingFunction();
 			}
-			address.address = 0x1FF004;
-			S25FLXXX_erase4KbSector(&address, &SPIChannel);
-			MMU_waitingFunction();
 			Memory_Write_Flag = FALSE;
 			MemoryReadyFlag = FALSE;
 			Elminado_Aviso();
@@ -101,8 +105,7 @@ void Menu_For_Erase_Memory(S25FLXXX_MemoryAddressType address, MemoryPortType SP
 
 	}
 	FirstMenu();
-	delay(15000);
-	delay(15000);
+	delay(DEBOUNCER);
 }
 /**This function prints all effect and depending the push button applied a respective Effect*/
 void Menu_For_Effect(S25FLXXX_MemoryAddressType address, MemoryPortType SPIChannel, ADC_ConfigType ADC)
@@ -113,8 +116,8 @@ void Menu_For_Effect(S25FLXXX_MemoryAddressType address, MemoryPortType SPIChann
 		LooperActivated(SPIChannel);
 		if(GPIO_readPIN(GPIO_C, BIT5))
 		{
-			delay(15000);
-			Potencia = 50;
+			delay(DEBOUNCER);
+			Potencia = INITIALVALUEPOT;
 			Resonator_Menu(Potencia);
 			while(!GPIO_readPIN(GPIO_C, BIT0))
 			{
@@ -122,26 +125,26 @@ void Menu_For_Effect(S25FLXXX_MemoryAddressType address, MemoryPortType SPIChann
 				Dac_Working(ADC, SLAPBACK);
 				if(GPIO_readPIN(GPIO_C, BIT5))
 				{
-					if(Potencia != 100)
-					Potencia += 10;
+					if(Potencia != TOPPOTVAL)
+					Potencia += STEPPOT;
 					Resonator_Menu(Potencia);
-					delay(15000);
+					delay(DEBOUNCER);
 				}
 				if(GPIO_readPIN(GPIO_C, BIT7))
 				{
-					if(Potencia != 0)
-					Potencia -= 10;
+					if(Potencia != LOWPOTVAL)
+					Potencia -= STEPPOT;
 					Resonator_Menu(Potencia);
-					delay(15000);
+					delay(DEBOUNCER);
 				}
 
 			}
-			delay(15000);
+			delay(DEBOUNCER);
 			MenuForEffect();
 		}else if(GPIO_readPIN(GPIO_C, BIT7))
 		{
-			delay(15000);
-			Potencia = 50;
+			delay(DEBOUNCER);
+			Potencia = INITIALVALUEPOT;
 			Chorus_Menu(Potencia);
 			while(!GPIO_readPIN(GPIO_C, BIT0))
 			{
@@ -149,25 +152,25 @@ void Menu_For_Effect(S25FLXXX_MemoryAddressType address, MemoryPortType SPIChann
 				Dac_Working(ADC, CHORUS);
 				if(GPIO_readPIN(GPIO_C, BIT5))
 				{
-					if(Potencia != 100)
-					Potencia += 10;
+					if(Potencia != TOPPOTVAL)
+					Potencia += STEPPOT;
 					Chorus_Menu(Potencia);
-					delay(15000);
+					delay(DEBOUNCER);
 				}
 				if(GPIO_readPIN(GPIO_C, BIT7))
 				{
-					if(Potencia != 0)
-					Potencia -= 10;
+					if(Potencia != LOWPOTVAL)
+					Potencia -= STEPPOT;
 					Chorus_Menu(Potencia);
-					delay(15000);
+					delay(DEBOUNCER);
 				}
 			}
-			delay(15000);
+			delay(DEBOUNCER);
 			MenuForEffect();
 		}else if(GPIO_readPIN(GPIO_C, BIT0))
 		{
-			delay(15000);
-			Potencia = 50;
+			delay(DEBOUNCER);
+			Potencia = INITIALVALUEPOT;
 			Flanger_Menu(Potencia);
 			while(!GPIO_readPIN(GPIO_C, BIT0))
 			{
@@ -175,25 +178,25 @@ void Menu_For_Effect(S25FLXXX_MemoryAddressType address, MemoryPortType SPIChann
 				Dac_Working(ADC, FLANGER);
 				if(GPIO_readPIN(GPIO_C, BIT5))
 				{
-					if(Potencia != 100)
-					Potencia += 10;
+					if(Potencia != TOPPOTVAL)
+					Potencia += STEPPOT;
 					Flanger_Menu(Potencia);
-					delay(15000);
+					delay(DEBOUNCER);
 				}
 				if(GPIO_readPIN(GPIO_C, BIT7))
 				{
-					if(Potencia != 0)
-					Potencia -= 10;
+					if(Potencia != LOWPOTVAL)
+					Potencia -= STEPPOT;
 					Flanger_Menu(Potencia);
-					delay(15000);
+					delay(DEBOUNCER);
 				}
 			}
-			delay(25000);
+			delay(DEBOUNCER);
 			MenuForEffect();
 		}else if(GPIO_readPIN(GPIO_C, BIT9))
 		{
-			delay(15000);
-			Potencia = 50;
+			delay(DEBOUNCER);
+			Potencia = INITIALVALUEPOT;
 			Wah_wah_Menu(Potencia);
 			while(!GPIO_readPIN(GPIO_C, BIT0))
 			{
@@ -201,25 +204,25 @@ void Menu_For_Effect(S25FLXXX_MemoryAddressType address, MemoryPortType SPIChann
 				Dac_Working(ADC, CLEAN);
 				if(GPIO_readPIN(GPIO_C, BIT5))
 				{
-					if(Potencia != 100)
-					Potencia += 10;
+					if(Potencia != TOPPOTVAL)
+					Potencia += STEPPOT;
 					Wah_wah_Menu(Potencia);
-					delay(15000);
+					delay(DEBOUNCER);
 				}
 				if(GPIO_readPIN(GPIO_C, BIT7))
 				{
-					if(Potencia != 0)
-					Potencia -= 10;
+					if(Potencia != LOWPOTVAL)
+					Potencia -= STEPPOT;
 					Wah_wah_Menu(Potencia);
-					delay(15000);
+					delay(DEBOUNCER);
 				}
 			}
-			delay(15000);
+			delay(DEBOUNCER);
 			MenuForEffect();
 		}else if(GPIO_readPIN(GPIO_C, BIT8))
 		{
-			delay(15000);
-			Potencia = 50;
+			delay(DEBOUNCER);
+			Potencia = INITIALVALUEPOT;
 			Tremolo_Menu(Potencia);
 			while(!GPIO_readPIN(GPIO_C, BIT0))
 			{
@@ -227,25 +230,25 @@ void Menu_For_Effect(S25FLXXX_MemoryAddressType address, MemoryPortType SPIChann
 				Dac_Working(ADC, TREMOLO);
 				if(GPIO_readPIN(GPIO_C, BIT5))
 				{
-					if(Potencia != 100)
-					Potencia += 10;
+					if(Potencia != TOPPOTVAL)
+					Potencia += STEPPOT;
 					Tremolo_Menu(Potencia);
-					delay(15000);
+					delay(DEBOUNCER);
 				}
 				if(GPIO_readPIN(GPIO_C, BIT7))
 				{
-					if(Potencia != 0)
-					Potencia -= 10;
+					if(Potencia != LOWPOTVAL)
+					Potencia -= STEPPOT;
 					Tremolo_Menu(Potencia);
-					delay(15000);
+					delay(DEBOUNCER);
 				}
 			}
-			delay(15000);
+			delay(DEBOUNCER);
 			MenuForEffect();
 		}else if(GPIO_readPIN(GPIO_C, BIT1))
 		{
-			delay(15000);
-			Potencia = 50;
+			delay(DEBOUNCER);
+			Potencia = INITIALVALUEPOT;
 			Distorsion_Menu(Potencia);
 			while(!GPIO_readPIN(GPIO_C, BIT0))
 			{
@@ -253,26 +256,26 @@ void Menu_For_Effect(S25FLXXX_MemoryAddressType address, MemoryPortType SPIChann
 				Dac_Working(ADC, DISTORTION);
 				if(GPIO_readPIN(GPIO_C, BIT5))
 				{
-					if(Potencia != 100)
-					Potencia += 10;
+					if(Potencia != TOPPOTVAL)
+					Potencia += STEPPOT;
 					Distorsion_Menu(Potencia);
-					delay(15000);
+					delay(DEBOUNCER);
 				}
 				if(GPIO_readPIN(GPIO_C, BIT7))
 				{
-					if(Potencia != 0)
-					Potencia -= 10;
+					if(Potencia != LOWPOTVAL)
+					Potencia -= STEPPOT;
 					Distorsion_Menu(Potencia);
-					delay(15000);
+					delay(DEBOUNCER);
 				}
 			}
-			delay(15000);
+			delay(DEBOUNCER);
 			MenuForEffect();
 		}
 	}
 
 	FirstMenu();
-	delay(15000);
+	delay(DEBOUNCER);
 }
 /**This function save values from the ADC in the memory until a push button is activated*/
 void Menu_For_Looper(S25FLXXX_MemoryAddressType address, MemoryPortType SPIChannel, ADC_ConfigType ADC)
@@ -280,14 +283,13 @@ void Menu_For_Looper(S25FLXXX_MemoryAddressType address, MemoryPortType SPIChann
 	MenuForLooper();
 	while(!GPIO_readPIN(GPIO_C, BIT7))
 	{
-		delay(15000);
+		delay(DEBOUNCER);
 		LooperActivated(SPIChannel);
 		Dac_Working(ADC, CLEAN);
 		if(GPIO_readPIN(GPIO_C, BIT5) && !Memory_Write_Flag)
 		{
-			delay(25000);
 	    		Counter=0;
-	    		address.address = 0;
+	    		address.address = INITIALVALUE;
 	    		Guardando_Aviso();
 	    			while(!GPIO_readPIN(GPIO_C, BIT5) && address.address <= TOP)
 	    			{
@@ -297,25 +299,25 @@ void Menu_For_Looper(S25FLXXX_MemoryAddressType address, MemoryPortType SPIChann
 	    					Data_Bits.address = Sample;
 	    					S25FLXXX_writeByte(Data_Bits.addressByByte.addressByte0,Data_Bits.addressByByte.addressByte1,&address,&SPIChannel);
 	    					MMU_waitingFunction();
-	    					address.address += 1;
+	    					address.address += STEPONE;
 	    					S25FLXXX_writeByte(Data_Bits.addressByByte.addressByte1,Data_Bits.addressByByte.addressByte0,&address,&SPIChannel);
 	    					MMU_waitingFunction();
-	    					address.address += 1;
+	    					address.address += STEPONE;
 	    					clearFlexFlag();
 	    				}
 	    			}
-	    			delay(25000);
+	    			delay(DEBOUNCER);
 	    			Memory_Write_Flag = TRUE;
 	    			MemoryReadyFlag = TRUE;
 	    			Counter=address.address;
-	    			address.address = 0;
+	    			address.address = INITIALVALUE;
 	    			Guardado_Aviso();
 	    	}else if(GPIO_readPIN(GPIO_C, BIT5))
 	    	{
 
 	    	}
 	}
-	delay(15000);
+	delay(DEBOUNCER);
 }
 /**This Function Read The memory and put the value in the DAC*/
 void LooperActivated(MemoryPortType SPIChannel)
@@ -323,13 +325,13 @@ void LooperActivated(MemoryPortType SPIChannel)
 	if(MemoryReadyFlag == TRUE  && getFlexFlag())
 	{
 	Data_Bits.addressByByte.addressByte0 = S25FLXXX_readByte(&AddresLooper,&SPIChannel);
-	AddresLooper.address += 1;
+	AddresLooper.address += STEPONE;
 	Data_Bits.addressByByte.addressByte1 = S25FLXXX_readByte(&AddresLooper,&SPIChannel);
-	AddresLooper.address += 1;
+	AddresLooper.address += STEPONE;
 	DAC0_write(Data_Bits.address);
 	/*If Counter2 is in his Max Value we restarted */
 	if (AddresLooper.address >= Counter)
-		AddresLooper.address=0;
+		AddresLooper.address = INITIALVALUE;
 	}
 }
 /**This Function reads the ADC and put it a effect and then put it in the DAC*/

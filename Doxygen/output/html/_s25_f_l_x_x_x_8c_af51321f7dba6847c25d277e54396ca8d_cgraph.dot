@@ -1,0 +1,24 @@
+digraph "Looper_Memory"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node0 [label="Looper_Memory",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node0 -> Node1 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1 [label="S25FLXXX_readByte",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_s25_f_l_x_x_x_8c.html#ac858e592d6d22c4345a58f6fbb088093"];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="GPIO_clearPIN",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_g_p_i_o_8c.html#a8e0195242968e9d04da390a9f40e88a3",tooltip="This clear an specific pin in a GPIO port. "];
+  Node1 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="SPI_transfer",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_s_p_i_8c.html#a5ad13ecfeda35016f18d06d2af95de60"];
+  Node1 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="GPIO_setPIN",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_g_p_i_o_8c.html#acb526ef87a32ac98905b39a88c04a928",tooltip="This set an specific pin in a GPIO port. "];
+  Node0 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="MMU_waitingFunction",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_s25_f_l_x_x_x_8c.html#a4b324f7e9886cefa3ff2be882d0f19d2"];
+  Node5 -> Node6 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="S25FLXXX_readStatusRegister",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_s25_f_l_x_x_x_8c.html#abbd307dcca5bd6c27e861980773bf65b"];
+  Node6 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node0 -> Node7 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 [label="DAC0_write",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_d_a_c_8c.html#ae004e614b39c9c9953b32f2875822519"];
+}

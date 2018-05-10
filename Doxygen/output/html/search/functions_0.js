@@ -1,0 +1,9 @@
+var searchData=
+[
+  ['adc_5fclk',['ADC_clk',['../_a_d_c_driver_8c.html#a5e68f8e9a0547cd2ca65fa6d8cb56aa5',1,'ADC_clk(ADCNoType ADCNumber):&#160;ADCDriver.c'],['../_a_d_c_driver_8h.html#a8c0b9fc6fc6f4439eaab910ac5ded30a',1,'ADC_clk(ADCNoType):&#160;ADCDriver.c']]],
+  ['adc_5fconfiguration',['ADC_Configuration',['../_a_d_c_driver_8c.html#ab5ac986bc568ea3d97dc0f01de08a5ac',1,'ADC_Configuration(ADCNoType ADCNumber, LowPowerCfgType LowPower, ClkDvdType ClkD, SampleTimeCfgType Samp, ConvModeType Conv, InputClkType InputC):&#160;ADCDriver.c'],['../_a_d_c_driver_8h.html#a1eb07068ffca75c122da98a5f9cc0af0',1,'ADC_Configuration(ADCNoType, LowPowerCfgType, ClkDvdType, SampleTimeCfgType, ConvModeType, InputClkType):&#160;ADCDriver.c']]],
+  ['adc_5fgetvalue',['ADC_getValue',['../_a_d_c_driver_8h.html#ab142d87a4f256cde75be865623c1d5f8',1,'ADCDriver.h']]],
+  ['adc_5finitialize',['ADC_initialize',['../_a_d_c_driver_8c.html#a547eb8431e805a0df40daa803338b0e4',1,'ADC_initialize(const ADC_ConfigType *ADC_Config, uint8 SC1_Conf, uint8 SC2_Conf, uint8 SC3_Conf):&#160;ADCDriver.c'],['../_a_d_c_driver_8h.html#abfe45f586a7e67a224568a489387df25',1,'ADC_initialize(const ADC_ConfigType *, uint8, uint8, uint8):&#160;ADCDriver.c']]],
+  ['adc_5fstatuscontrol',['ADC_StatusControl',['../_a_d_c_driver_8c.html#ae325b07f360e967dd8a5d210aecc3020',1,'ADC_StatusControl(ADCNoType ADCNumber, uint8 SC1_Config, uint8 SC2_Config, uint8 SC3_Config):&#160;ADCDriver.c'],['../_a_d_c_driver_8h.html#a1f537b5a578199f2228c4685dc8f3220',1,'ADC_StatusControl(ADCNoType, uint8, uint8, uint8):&#160;ADCDriver.c']]],
+  ['atc',['atc',['../_m_c_g_8c.html#ad61f1befd520b09a730c781767240a56',1,'atc(unsigned char irc_select, int irc_freq, int mcg_out_freq):&#160;MCG.c'],['../_m_c_g_8h.html#ad61f1befd520b09a730c781767240a56',1,'atc(unsigned char irc_select, int irc_freq, int mcg_out_freq):&#160;MCG.c']]]
+];

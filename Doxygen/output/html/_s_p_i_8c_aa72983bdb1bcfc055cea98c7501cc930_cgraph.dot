@@ -1,0 +1,37 @@
+digraph "SPI_init"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node9 [label="SPI_init",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node9 -> Node10 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node10 [label="SPI_clk",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_s_p_i_8c.html#ac1a921d11fb32aca89e0125fabebf57b"];
+  Node9 -> Node11 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node11 [label="GPIO_clockGating",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_g_p_i_o_8c.html#a621b0dc3536c64501a7a6c560b667355",tooltip="This function enables the GPIO clock by configuring the corresponding bit and register in the System ..."];
+  Node9 -> Node12 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node12 [label="GPIO_pinControlRegister",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_g_p_i_o_8c.html#ab7610a9d041c1c33f8a3fbf348bf80ef"];
+  Node9 -> Node13 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node13 [label="SPI_enable",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_s_p_i_8c.html#aa8569eff93c8e6e683029aead54bc3ba"];
+  Node9 -> Node14 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node14 [label="SPI_setMaster",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_s_p_i_8c.html#af719801cd186b9fb20bf73526e0ed5d4"];
+  Node9 -> Node15 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node15 [label="SPI_fIFO",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_s_p_i_8c.html#adc37d6ef8ffc0a20c3798a89c75b85f6"];
+  Node9 -> Node16 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node16 [label="SPI_clockPolarity",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_s_p_i_8c.html#af5744b76088520e4d616d70a67fa9374"];
+  Node9 -> Node17 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node17 [label="SPI_frameSize",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_s_p_i_8c.html#a2b22692d4029ec6e2b80042ebf7d23b0"];
+  Node9 -> Node18 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node18 [label="SPI_clockPhase",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_s_p_i_8c.html#aa554c5eb0689247229572608adfee916"];
+  Node9 -> Node19 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node19 [label="SPI_baudRate",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_s_p_i_8c.html#a65386870aac220d021ad3a0a7a89236a"];
+  Node9 -> Node20 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node20 [label="SPI_mSBFirst",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_s_p_i_8c.html#a36b8131ffc4c516faec0458252e5abf2"];
+  Node9 -> Node21 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node21 [label="SPI_CSInactiveState",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_s_p_i_8c.html#aa6b2a69f915af12367ea520c8a1589e0"];
+  Node9 -> Node22 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node22 [label="SPI_setSlave",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_s_p_i_8c.html#af381cfe41df8f7b6e1a8e9db2f3ef7e9",tooltip="Configuracion adicional del SPI en modo esclavo. "];
+  Node9 -> Node23 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node23 [label="GPIO_setPIN",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_g_p_i_o_8c.html#acb526ef87a32ac98905b39a88c04a928",tooltip="This set an specific pin in a GPIO port. "];
+  Node9 -> Node24 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node24 [label="GPIO_dataDirectionPIN",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_g_p_i_o_8c.html#ab6dd1d7bf26b2a8127f5806288779dba",tooltip="This function configure specific pins of a GPIO port as input when 1 logic is written or output when ..."];
+}

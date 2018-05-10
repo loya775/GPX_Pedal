@@ -1,0 +1,26 @@
+var _a_d_c_driver_8c =
+[
+    [ "ADC_LOWRESULT", "_a_d_c_driver_8c.html#a3f85220b2150ccef56696eeb9b3bc158", null ],
+    [ "ADCPIN", "_a_d_c_driver_8c.html#a21c555c3cebca0a9bef4156fa4ab9c95", null ],
+    [ "CLKSHIFT", "_a_d_c_driver_8c.html#aa159172dec9bee4de5e70b7d12d39976", null ],
+    [ "CONVSHIFT", "_a_d_c_driver_8c.html#a781e494bfc5a651b2f86fae196dd7e10", null ],
+    [ "DECIMALFACTOR", "_a_d_c_driver_8c.html#a613a988cdde0a2dcdee01f02d8a176ab", null ],
+    [ "FAHRENHEITCONST", "_a_d_c_driver_8c.html#a605e5236ba1d11d0c3f0c07bb9e47638", null ],
+    [ "FAHRENHEITFACTOR", "_a_d_c_driver_8c.html#add42d8ed37da2a9aa623888dc648a7dd", null ],
+    [ "INITIALCFG1", "_a_d_c_driver_8c.html#acc30a1f14d5d6e2befccb1da0b2bf38c", null ],
+    [ "INITIALSC1", "_a_d_c_driver_8c.html#a6c716ee1a5ac84ea0919878c2a3fee21", null ],
+    [ "INITIALSC3", "_a_d_c_driver_8c.html#a530369014ec48c7c8ab4fb28bff98b5a", null ],
+    [ "LOWPOWERSHIFT", "_a_d_c_driver_8c.html#a309ab3eb20f093554596521f9bb74b63", null ],
+    [ "MAXBITS", "_a_d_c_driver_8c.html#a6fcad31e688110d9d61bdcc99b2a59d7", null ],
+    [ "MAXVOLTAGE", "_a_d_c_driver_8c.html#a7ef94e0e1f3d964155140a8bf1005f09", null ],
+    [ "SAMPSHIFT", "_a_d_c_driver_8c.html#aa5723de796f6af61eb7995c38eec8687", null ],
+    [ "TEMPSLOPE", "_a_d_c_driver_8c.html#ae7420e0244b19aa90ed2c69cda56706d", null ],
+    [ "ADC_clk", "_a_d_c_driver_8c.html#a5e68f8e9a0547cd2ca65fa6d8cb56aa5", null ],
+    [ "ADC_Configuration", "_a_d_c_driver_8c.html#ab5ac986bc568ea3d97dc0f01de08a5ac", null ],
+    [ "ADC_initialize", "_a_d_c_driver_8c.html#a547eb8431e805a0df40daa803338b0e4", null ],
+    [ "ADC_StatusControl", "_a_d_c_driver_8c.html#ae325b07f360e967dd8a5d210aecc3020", null ],
+    [ "getTemperatureCelsius", "_a_d_c_driver_8c.html#a6a88ffd39efc3bd134958f570bd75f73", null ],
+    [ "getTemperatureFahrenheit", "_a_d_c_driver_8c.html#a4d8a29723c99f9b51ebcb36f210c9124", null ],
+    [ "StartConversion", "_a_d_c_driver_8c.html#a51c3fc86aac41048469e3ded188c8430", null ],
+    [ "ADC_Config", "_a_d_c_driver_8c.html#a9c88048bb6d162eedcc89fb1dc672314", null ]
+];

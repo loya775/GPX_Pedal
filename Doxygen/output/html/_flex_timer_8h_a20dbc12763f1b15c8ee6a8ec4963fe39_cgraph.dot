@@ -1,0 +1,9 @@
+digraph "FlexTimerConvertVALUE"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node5 [label="FlexTimerConvertVALUE",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node5 -> Node6 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="FlexTimer_GetCounter",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_flex_timer_8c.html#adc7514b899ca5abc1532e9b251e4bb1b",tooltip="This function gives you value of count from FTM2 interruptions. "];
+}

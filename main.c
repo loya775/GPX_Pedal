@@ -47,8 +47,15 @@
 #include "WriteConsole.h"
 #include "FunctionRotate.h"
 
+#define INITIALVALUE 0
+#define MENU1 0
+#define MENU2 1
+#define MENU3 2
+#define DEBOUNCER 15000
+
 #define SC1FLAG 0x1F
 #define SC3FlAG 0x07
+
 
 #define SC1FLAG 0x1F
 #define SC3FlAG 0x07
@@ -127,16 +134,16 @@ int main(void)
 {
 	uint8 mcg_clk_hz;
 	mcg_clk_hz = pll_init(CLK_FREQ_HZ, LOW_POWER, EXTERNAL_CLOCK, PLL0_PRDIV, PLL0_VDIV, PLL_ENABLE);
-	S25FLXXX_MemoryAddressType S25FLXXX_MemoryAddress = {0};
+	S25FLXXX_MemoryAddressType S25FLXXX_MemoryAddress = {INITIALVALUE};
 	uint8 SC1cfg = SC1FLAG;
-	uint8 SC2cfg = 0;
+	uint8 SC2cfg = INITIALVALUE;
 	uint8 SC3cfg = SC3FlAG;
 	uint8 SelectFunction;
 	uint8 FlagForFunction = FALSE;
 	/*uint8 Probe;
 	uint8 Probe2;
 	uint8 Probe3;*/
-	S25FLXXX_MemoryAddress.address = 0;
+	S25FLXXX_MemoryAddress.address = INITIALVALUE;
 	GPIO_Initialize();
 	DAC0_clockGating();
 	DAC0_init();
@@ -177,22 +184,22 @@ int main(void)
     	if(GPIO_readPIN(GPIO_C, BIT5))
     	{
     		FlagForFunction = TRUE;
-    		SelectFunction = 0;
-    		delay(15000);
+    		SelectFunction = MENU1;
+    		delay(DEBOUNCER);
     	}
     	/*This if select the Erase Menu**/
     	if(GPIO_readPIN(GPIO_C, BIT7))
     	{
-    		SelectFunction = 1;
+    		SelectFunction = MENU2;
     		FlagForFunction = TRUE;
-    		delay(15000);
+    		delay(DEBOUNCER);
     	}
     	/*This if select the Effect Menu**/
     	if(GPIO_readPIN(GPIO_C, BIT0))
     	{
     		FlagForFunction = TRUE;
-    		SelectFunction = 2;
-    		delay(15000);
+    		SelectFunction = MENU3;
+    		delay(DEBOUNCER);
     	}
 
     	/**If the FlagForFunction is activated function choose_function is call and dependyng of SelectFunction value a Menu is print*/
